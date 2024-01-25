@@ -45,5 +45,8 @@ const getFilme = function(id){
     }
 }
 
-console.log(getFilme(3))
+module.exports = {
+    getFilmes,
+    getFilme
+}
 
