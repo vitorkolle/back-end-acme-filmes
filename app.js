@@ -28,6 +28,21 @@ app.get('/v1/acmeFilmes/filmes', cors(), async function(request, response, next)
         }
     })
 
+app.get('/v1/acmeFilmes/filme/:id', cors(), async function(request, response, next){
+    let id = request.params.id
+
+    let controleFilme = require('./controller/funcoes.js')
+    let dadosFilme = controleFilme.getFilme(id)
+
+    if(dadosFilme){
+        response.json(dadosFilme)
+        response.status(200)
+    }else{
+        response.json('{erro: item nãi encontrado}')
+        response.status(404)
+    }
+})
+
 app.listen('8080', function(){
   console.log('API funcionando!!!!')
 })

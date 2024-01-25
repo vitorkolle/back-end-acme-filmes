@@ -35,7 +35,7 @@ const getFilme = function(id){
             jsonFilme.valor_unitario = filmesA.valor_unitario
 
             status = true
-        }        
+        }  
     });
 
     if(filmes){
