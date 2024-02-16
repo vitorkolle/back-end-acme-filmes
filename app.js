@@ -4,11 +4,28 @@
  * Autor: Vitor Paes Kolle
  * Versão: 1.0 
  ***********************************************************************************************************/
+/**
+ *  Para realizar a integração com o banco de dados devemos utilizar uma das seguintes bibliotecas:
+ *        -SEQUELIZE    (BIBLIOTECA ANTIGA, E POSSUI MAIS CONTEUDOS EXPLICATIVOS NA WEB)
+ *        -PRISMA ORM   (A BIBLIOTECA MAIS ATUAL - UTILIZADA NESSE PROJETO)
+ *        -FASTFY ORM   (A BIBLIOTECA MAIS ATUAL)
+ * 
+ * 
+ *      Para a instalação do Prisma ORM
+ *      npm instal --save   (É responsávem pela conexão como o DB)
+ *      npm install @prisma/client --save   (É responsavel por executar scripts SQL mo DB)
+ *  
+ *      Para inicializar o prisma no projeto
+ * 
+ *      npx prisma init
+ */
+
 
 //Importação das bibliotecas necessárias para o projeto
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const controllerFilmes = require('./controller/controller_filme.js')
 
 //Criação do App
 const app = express()
@@ -24,9 +41,8 @@ app.use((request, response, next) => {
         next()
     })
 
-//Criação do endpoint que retorna todos os filmes
+//Criação do endpoint que retorna todos os filmes do Json
 app.get('/v1/acmeFilmes/filmes', cors(), async function(request, response, next){
-        let controleFilmes = require('./controller/funcoes.js')
         let listaFilmes = controleFilmes.getFilmes()
     
         if(listaFilmes){
@@ -39,12 +55,11 @@ app.get('/v1/acmeFilmes/filmes', cors(), async function(request, response, next)
         }
     })
 
-//Criação do endpoint que busca um filme filtrando pelo id
+//Criação do endpoint que busca um filme do Json filtrando pelo id
 app.get('/v1/acmeFilmes/filme/:id', cors(), async function(request, response, next){
     let id = request.params.id
 
-    let controleFilme = require('./controller/funcoes.js')
-    let dadosFilme = controleFilme.getFilme(id)
+    let dadosFilme = controleFilmes.getFilme(id)
 
     if(dadosFilme){
         response.json(dadosFilme)
