@@ -5,6 +5,9 @@
  * Versão: 1.0 
  ***********************************************************************************************************/
 
+//Import do arquivo responsavel pela interação com o BD
+const filmesDAO = require('../model/DAO/filme.js')
+
 //Função para validar e inserir um novo filme
 const setInserirNovoFilme = async function(){
 }
@@ -14,11 +17,23 @@ const setAtualizarFilme = async function(){
 }
 
 //Função para excluir um filme
-const setExluirFilme = async function(){
+const setExcluirFilme = async function(){
 }
 
 //Função para retornar todos os filmes
 const getListarFilmes = async function(){
+    const jsonFilmes = {}
+
+    let dadosFilmes = await filmesDAO.selectAllFilmes()
+
+    if(dadosFilmes){
+        jsonFilmes.filmes = dadosFilmes
+        jsonFilmes.quantidade = dadosFilmes.lenght
+        jsonFilmes.status_code = 200
+
+        return jsonFilmes
+    }else
+        return false
 }
 
 //Função para buscar um filme pelo id
@@ -28,7 +43,7 @@ const getBuscarFilme = async function(){
 module.exports = {
     setInserirNovoFilme,
     setAtualizarFilme,
-    setExluirFilme,
+    setExcluirFilme,
     getListarFilmes,
     getBuscarFilme
 }

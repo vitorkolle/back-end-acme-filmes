@@ -25,6 +25,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const controleFilmes = require ('./controller/funcoes.js')
 const controllerFilmes = require('./controller/controller_filme.js')
 
 //Criação do App
@@ -55,6 +56,21 @@ app.get('/v1/acmeFilmes/filmes', cors(), async function(request, response, next)
         }
     })
 
+app.get('/v2/acmeFilmes/filmes',cors(),async function(request, response, next){
+
+        //Chama a função da controller para retornar todos os filmes
+        let dadosFilmes = await controllerFilmes.getListarFilmes()
+    
+        //Validação para verificar se existe dados a serem retornados
+        if (dadosFilmes) {
+            response.json(dadosFilmes)
+            response.status(200)
+        }else{
+            response.json({message: 'Nenhum registro encontrado'})
+            response.status(404)
+        }
+    })
+
 //Criação do endpoint que busca um filme do Json filtrando pelo id
 app.get('/v1/acmeFilmes/filme/:id', cors(), async function(request, response, next){
     let id = request.params.id
@@ -69,6 +85,10 @@ app.get('/v1/acmeFilmes/filme/:id', cors(), async function(request, response, ne
         response.status(404)
     }
 })
+
+
+/***************************************** Import dos arquivos do controller do projeto***********************/
+const controllerFilmes = require('./controller/controller_filme.js')
 
 //Configuração para que a API use a porta 8080
 app.listen('8080', function(){
