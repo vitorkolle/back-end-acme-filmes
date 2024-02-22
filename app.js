@@ -26,6 +26,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const controleFilmes = require ('./controller/funcoes.js')
+
+/***************************************** Import dos arquivos do controller do projeto***********************/
 const controllerFilmes = require('./controller/controller_filme.js')
 
 //Criação do App
@@ -54,22 +56,7 @@ app.get('/v1/acmeFilmes/filmes', cors(), async function(request, response, next)
             response.status(404)
             response.json('{erro: item não encontrado}')
         }
-    })
-
-app.get('/v2/acmeFilmes/filmes',cors(),async function(request, response, next){
-
-        //Chama a função da controller para retornar todos os filmes
-        let dadosFilmes = await controllerFilmes.getListarFilmes()
-    
-        //Validação para verificar se existe dados a serem retornados
-        if (dadosFilmes) {
-            response.json(dadosFilmes)
-            response.status(200)
-        }else{
-            response.json({message: 'Nenhum registro encontrado'})
-            response.status(404)
-        }
-    })
+})
 
 //Criação do endpoint que busca um filme do Json filtrando pelo id
 app.get('/v1/acmeFilmes/filme/:id', cors(), async function(request, response, next){
@@ -86,9 +73,35 @@ app.get('/v1/acmeFilmes/filme/:id', cors(), async function(request, response, ne
     }
 })
 
+//Criação do endpoint que retorna todos os filmes do Banco de Dados
+app.get('/v2/acmeFilmes/filmes',cors(),async function(request, response, next){
 
-/***************************************** Import dos arquivos do controller do projeto***********************/
-const controllerFilmes = require('./controller/controller_filme.js')
+        //Chama a função da controller para retornar todos os filmes
+        let dadosFilmes = await controllerFilmes.getListarFilmes()
+
+        response.status(dadosFilmes.status_code)
+        response.json(dadosFilmes)
+})
+
+//Criação do endpoint que retorna um filme no banco de dados filtrando pelo id 
+app.get('/v2/acmeFilmes/filme/:id', cors(), async function(request, response){
+    let idFilme = request.params.id
+
+    let dadosFilme = await controllerFilmes.getBuscarFilme(idFilme)
+
+    response.status(dadosFilme.status_code)
+    response.json(dadosFilme)
+})
+
+//Criação do endpoint que retorna dados de um filme filtrando pelo nome
+app.get('/v2/acmeFilmes/nomefilme', cors(), async function(request, response){
+    let nomeFilme = request.query.nome
+
+    let dadosFilme = await controllerFilmes.getBuscarFilmeNome(nomeFilme)
+
+    response.status(dadosFilme.status_code)
+    response.json(dadosFilme)
+})
 
 //Configuração para que a API use a porta 8080
 app.listen('8080', function(){
