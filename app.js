@@ -37,12 +37,15 @@ const app = express()
 app.use((request, response, next) => {
         response.header('Access-Control-Allow-Origin', '*')
 
-        response.header('Access-Control-Allow-Methods', 'GET')
+        response.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
     
         app.use(cors())
     
         next()
     })
+
+//Criando um objeto para controlar a chegada dos dados da requisição em formato JSON
+const bodyParserJSON =  bodyParser.json()
 
 //Criação do endpoint que retorna todos os filmes do Json
 app.get('/v1/acmeFilmes/filmes', cors(), async function(request, response, next){
@@ -101,6 +104,17 @@ app.get('/v2/acmeFilmes/nomefilme', cors(), async function(request, response){
 
     response.status(dadosFilme.status_code)
     response.json(dadosFilme)
+})
+
+app.post('/v2/acmeFilmes/filme', cors(), bodyParserJSON, async function(request, response){
+    //Recebe todos os dados encaminhados na requisição pelo body
+    let dadosBody = request.body
+
+    //Encaminha os dados para a controller enviar para o DAO
+    let resultDadosNovoFilme = await controllerFilmes.setInserirNovoFilme(dadosBody)
+    
+    response.status(resultDadosNovoFilme.status_code)
+    response.json(resultDadosNovoFilme)
 })
 
 //Configuração para que a API use a porta 8080
