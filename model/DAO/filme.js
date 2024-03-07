@@ -12,14 +12,19 @@ const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient()
 
 //Função para inserir um filme no banco de dados
-   const insertFilme = async function(dadosFilme){
+const insertFilme = async function(dadosFilme){
     try {
-        let sql = `ìnsert into tbl_filme( nome,
+
+    let sql
+
+    if(dadosFilme.data_relancamento != '' && dadosFilme.data_relancamento != null && dadosFilme.data_relancamento != undefined){
+        sql = `insert into tbl_filme( 
+            nome,
             sinopse,
             duracao,
             data_lancamento,
             data_relancamento,
-            foto_capa.
+            foto_capa,
             valor_unitario
    )values(
             '${dadosFilme.nome}',
@@ -30,6 +35,25 @@ const prisma = new PrismaClient()
             '${dadosFilme.foto_capa}',
             '${dadosFilme.valor_unitario}'
 )`
+   }else{
+    sql = `insert into tbl_filme( 
+        nome,
+        sinopse,
+        duracao,
+        data_lancamento,
+        data_relancamento,
+        foto_capa,
+        valor_unitario
+)values(
+        '${dadosFilme.nome}',
+        '${dadosFilme.sinopse}',
+        '${dadosFilme.duracao}',
+        '${dadosFilme.data_lancamento}',
+         null,
+        '${dadosFilme.foto_capa}',
+        '${dadosFilme.valor_unitario}'
+)`
+   }
    //executeRawUnsafe() = serve para executar scripts sem retorno de dados
       //(insert, update, delete)
    //queryRawUnsafe() = serve para executar scripts com retorno de dados
@@ -55,6 +79,19 @@ const updateFilme = async function(){
 const deleteFilme = async function(){
 }
 
+//Função para reeber o id do último filme cadastrado
+const selectIdLastFilme = async function(){
+    try {
+        let sql = 'select cast(last_insert_id() as decimal) as id from tbl_filme limit 1'
+
+        let rsIdFilme = await prisma.$queryRawUnsafe(sql)
+        return rsIdFilme
+        
+    } catch (error) {
+        return false        
+    }
+}
+
 //Função para listar todos os filmes do banco de dados
 const selectAllFilmes = async function(){
     try {
@@ -70,6 +107,7 @@ const selectAllFilmes = async function(){
         return false        
     }
 }
+
 //Função para buscar um filme no banco de dados, filtrando pelo id
 const selectByIdFilme = async function(id){
     try {
@@ -86,6 +124,7 @@ const selectByIdFilme = async function(id){
     }
     
 }
+
 //Função para buscar um filme no banco de dados, filtrando pelo nome
 const selectByNomeFilme = async function(nome){
     try {
@@ -108,6 +147,7 @@ module.exports = {
     deleteFilme,
     selectAllFilmes,
     selectByIdFilme,
-    selectByNomeFilme
+    selectByNomeFilme,
+    selectIdLastFilme
 }
 

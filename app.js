@@ -12,7 +12,7 @@
  * 
  * 
  *      Para a instalação do Prisma ORM
- *      npm instal --save   (É responsávem pela conexão como o DB)
+ *      npm install prisma --save   (É responsávem pela conexão como o DB)
  *      npm install @prisma/client --save   (É responsavel por executar scripts SQL mo DB)
  *  
  *      Para inicializar o prisma no projeto
@@ -106,6 +106,7 @@ app.get('/v2/acmeFilmes/nomefilme', cors(), async function(request, response){
     response.json(dadosFilme)
 })
 
+//Criação do endpoint que cadastra um filme no banco de dados
 app.post('/v2/acmeFilmes/filme', cors(), bodyParserJSON, async function(request, response){
     //Recebe todos os dados encaminhados na requisição pelo body
     let dadosBody = request.body
@@ -119,5 +120,5 @@ app.post('/v2/acmeFilmes/filme', cors(), bodyParserJSON, async function(request,
 
 //Configuração para que a API use a porta 8080
 app.listen('8080', function(){
-  console.log('API funcionando!!!!')
+  console.log('API funcionando e aguardando requisições')
 })
