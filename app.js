@@ -76,6 +76,8 @@ app.get('/v1/acmeFilmes/filme/:id', cors(), async function(request, response, ne
     }
 })
 
+/********************************************************************************************** */
+
 //Criação do endpoint que retorna todos os filmes do Banco de Dados
 app.get('/v2/acmeFilmes/filmes',cors(),async function(request, response, next){
 
@@ -108,14 +110,28 @@ app.get('/v2/acmeFilmes/nomefilme', cors(), async function(request, response){
 
 //Criação do endpoint que cadastra um filme no banco de dados
 app.post('/v2/acmeFilmes/filme', cors(), bodyParserJSON, async function(request, response){
+   
+    //Recebe o content-type com o tipo de dados encaminhado na requisição
+    const contentType = request.header('content-type')
+   
     //Recebe todos os dados encaminhados na requisição pelo body
     let dadosBody = request.body
 
     //Encaminha os dados para a controller enviar para o DAO
-    let resultDadosNovoFilme = await controllerFilmes.setInserirNovoFilme(dadosBody)
+    let resultDadosNovoFilme = await controllerFilmes.setInserirNovoFilme(dadosBody, contentType)
     
     response.status(resultDadosNovoFilme.status_code)
     response.json(resultDadosNovoFilme)
+})
+
+//Criação do endpoint que deleta um filme no banco de dados filtrando pelo id
+app.delete('/v2/acmeFilmes/filme/:id', cors(), async function(request, response){
+    let idFilme = request.params.id
+
+    let dadosExclusao = await controllerFilmes.setExcluirFilme(idFilme)
+
+    response.status(dadosExclusao.status_code)
+    response.json(dadosExclusao.message)
 })
 
 //Configuração para que a API use a porta 8080
