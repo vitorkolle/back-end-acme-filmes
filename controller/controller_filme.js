@@ -133,20 +133,27 @@ const setExcluirFilme = async function (id) {
     //recebe o id do filme
     let idFilme = id
 
-    //verifica se o id recebido é válido
-    if (idFilme == '' || idFilme == undefined || isNaN(idFilme)) {
-        return message.ERROR_INVALID_ID //400
-    } else {
-        //Encaminha o id para a DAO deletar no banco de dados
-        let dadosFilme = await filmesDAO.deleteFilme(idFilme)
+    let validarId = await filmesDAO.selectByIdFilme(idFilme)
 
-        //verificar se a DAO apagou o filme
-        if (dadosFilme) {
-            return message.SUCCESS_DELETED_ITEM //200            
+    if (validarId.length > 0) {
+        //verifica se o id recebido é válido
+        if (idFilme == '' || idFilme == undefined || isNaN(idFilme)) {
+            return message.ERROR_INVALID_ID //400
+        } else {
+            //Encaminha o id para a DAO deletar no banco de dados
+            let dadosFilme = await filmesDAO.deleteFilme(idFilme)
+
+            //verificar se a DAO apagou o filme
+            if (dadosFilme) {
+                return message.SUCCESS_DELETED_ITEM //200            
+            }
+            else {
+                return message.ERROR_INTERNAL_SERVER_DB //500
+            }
         }
-        else {
-            return message.ERROR_INTERNAL_SERVER_DB //500
-        }
+
+    } else {
+        return message.ERROR_NOT_FOUND //404
     }
 }
 

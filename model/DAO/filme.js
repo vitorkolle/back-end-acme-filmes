@@ -127,7 +127,12 @@ const deleteFilme = async function(id){
         
         //sem retorno de dados
         let rsFilme = await prisma.$executeRawUnsafe(sql)
-        return rsFilme
+
+        if(rsFilme){
+            return rsFilme
+        }else{
+            return false
+        }
     }catch(error){
         return false        
     }
@@ -171,7 +176,11 @@ const selectByIdFilme = async function(id){
     //Executa o Sql no banco de dados
     let rsFilme = await prisma.$queryRawUnsafe(sql)
 
-    return rsFilme
+    if(rsFilme){
+        return rsFilme   
+    }else{
+        return false
+    }
 
     } catch (error) {
         return false
