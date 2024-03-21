@@ -79,48 +79,56 @@ const setAtualizarFilme = async function (id, novosDados, contentType) {
 
         if (String(contentTypeL).toLowerCase() == 'application/json') {
 
-            let filmeAtualizadoJSON = {}
+            let idFilme = id
+            const validarId = await filmesDAO.selectByIdFilme(idFilme)
 
-            if (novosDados.nome == '' || novosDados.nome == undefined || novosDados.nome == null || novosDados.nome.length > 80 ||
-                novosDados.sinopse == '' || novosDados.sinopse == undefined || novosDados.sinopse == null || novosDados.sinopse.length > 65000 ||
-                novosDados.duracao == '' || novosDados.duracao == undefined || novosDados.duracao == null || novosDados.duracao.length > 8 ||
-                novosDados.data_lancamento == '' || novosDados.data_lancamento == undefined || novosDados.data_lancamento == null || novosDados.data_lancamento.length != 10 ||
-                novosDados.foto_capa == '' || novosDados.foto_capa == undefined || novosDados.foto_capa == null || novosDados.foto_capa.length > 200 ||
-                novosDados.valor_unitario.length > 6
-            ) {
-                return message.ERROR_REQUIRED_FIELDS
-            } else {
-                let validateStatus = false
+            if (validarId.length > 0) {
 
-                if (novosDados.data_relancamento != '' && novosDados.data_relancamento != null && novosDados.data_relancamento != undefined) {
-                    if (novosDados.data_relancamento.length != 10) {
-                        return message.ERROR_REQUIRED_FIELDS //400
+                let filmeAtualizadoJSON = {}
+
+                if (novosDados.nome == '' || novosDados.nome == undefined || novosDados.nome == null || novosDados.nome.length > 80 ||
+                    novosDados.sinopse == '' || novosDados.sinopse == undefined || novosDados.sinopse == null || novosDados.sinopse.length > 65000 ||
+                    novosDados.duracao == '' || novosDados.duracao == undefined || novosDados.duracao == null || novosDados.duracao.length > 8 ||
+                    novosDados.data_lancamento == '' || novosDados.data_lancamento == undefined || novosDados.data_lancamento == null || novosDados.data_lancamento.length != 10 ||
+                    novosDados.foto_capa == '' || novosDados.foto_capa == undefined || novosDados.foto_capa == null || novosDados.foto_capa.length > 200 ||
+                    novosDados.valor_unitario.length > 6
+                ) {
+                    return message.ERROR_REQUIRED_FIELDS
+                } else {
+                    let validateStatus = false
+
+                    if (novosDados.data_relancamento != '' && novosDados.data_relancamento != null && novosDados.data_relancamento != undefined) {
+                        if (novosDados.data_relancamento.length != 10) {
+                            return message.ERROR_REQUIRED_FIELDS //400
+                        } else {
+                            validateStatus = true
+                        }
                     } else {
                         validateStatus = true
                     }
-                } else {
-                    validateStatus = true
-                }
 
-                if (validateStatus) {
-                    novosDados.id = id
-                    let filmeAtualizado = await filmesDAO.updateFilme(novosDados)
+                    if (validateStatus) {
+                        novosDados.id = id
+                        let filmeAtualizado = await filmesDAO.updateFilme(novosDados)
 
-                    if (filmeAtualizado) {
-                        filmeAtualizadoJSON.filme = novosDados
-                        filmeAtualizadoJSON.status = message.SUCCESS_UPDATED_ITEM
-                        filmeAtualizadoJSON.status_code = message.SUCCESS_UPDATED_ITEM.status_code
-                        filmeAtualizadoJSON.message = message.SUCCESS_UPDATED_ITEM.message
+                        if (filmeAtualizado) {
+                            filmeAtualizadoJSON.filme = novosDados
+                            filmeAtualizadoJSON.status = message.SUCCESS_UPDATED_ITEM
+                            filmeAtualizadoJSON.status_code = message.SUCCESS_UPDATED_ITEM.status_code
+                            filmeAtualizadoJSON.message = message.SUCCESS_UPDATED_ITEM.message
 
-                        return filmeAtualizadoJSON
-                    } else {
-                        return message.ERROR_INTERNAL_SERVER_DB //500
+                            return filmeAtualizadoJSON
+                        } else {
+                            return message.ERROR_INTERNAL_SERVER_DB //500
+                        }
                     }
-                }
 
+                }
+            } else {
+                return message.ERROR_NOT_FOUND //404
             }
         } else {
-            return message.ERROR_CONTENT_TYPE
+            return message.ERROR_CONTENT_TYPE //415
         }
 
     } catch (error) {
