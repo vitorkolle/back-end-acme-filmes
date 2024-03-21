@@ -72,7 +72,51 @@ const insertFilme = async function(dadosFilme){
 }
 
 //Função para atualizar um filme no banco de dados
-const updateFilme = async function(){
+const updateFilme = async function(novosDados){
+try{
+    let sql
+
+    if(novosDados.data_relancamento != '' && novosDados.data_relancamento != null && novosDados.data_relancamento != undefined){
+        console.log(novosDados.nome)
+    sql = `update tbl_filme
+               set
+
+               nome = '${novosDados.nome}',
+               sinopse = '${novosDados.sinopse}',
+               duracao = '${novosDados.duracao}',
+               data_lancamento = '${novosDados.data_lancamento}',
+               data_relancamento = '${novosDados.data_relancamento}',
+               foto_capa = '${novosDados.foto_capa}',
+               valor_unitario = ${novosDados.valor_unitario},
+               
+               where id = ${novosDados.id}
+               `
+    }else{
+        sql = `update tbl_filme
+               set
+
+               nome = '${novosDados.nome}',
+               sinopse = '${novosDados.sinopse}',
+               duracao = '${novosDados.duracao}',
+               data_lancamento = '${novosDados.data_lancamento}',
+               foto_capa = '${novosDados.foto_capa}',
+               valor_unitario = ${novosDados.valor_unitario}
+               
+               where id = ${novosDados.id}
+               `
+    }
+    let result = await prisma.$executeRawUnsafe(sql)
+
+
+    if(result){
+        return true
+    }else{
+        return false
+    }
+}
+catch(error){
+    return false
+}    
 }
 
 //Função para excluir um filme no banco de dados

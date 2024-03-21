@@ -76,7 +76,7 @@ app.get('/v1/acmeFilmes/filme/:id', cors(), async function(request, response, ne
     }
 })
 
-/********************************************************************************************** */
+/***********************************Endpoints Atuais*********************************************************** */
 
 //Criação do endpoint que retorna todos os filmes do Banco de Dados
 app.get('/v2/acmeFilmes/filmes',cors(),async function(request, response, next){
@@ -132,6 +132,21 @@ app.delete('/v2/acmeFilmes/filme/:id', cors(), async function(request, response)
 
     response.status(dadosExclusao.status_code)
     response.json(dadosExclusao.message)
+})
+
+//Criação do endpoint que atualiza um filme filtrando pelo id
+app.put('/v2/acmeFilmes/filme/:id', cors(), bodyParserJSON, async function(request, response){
+    let idFilme = request.params.id
+
+    const contentType = request.header('content-type')
+
+    const dadosBody = request.body
+
+    
+    let resultDadosFilmeAtualizado = await controllerFilmes.setAtualizarFilme(idFilme, dadosBody, contentType)
+
+    response.status(resultDadosFilmeAtualizado.status_code)
+    response.json(resultDadosFilmeAtualizado)
 })
 
 //Configuração para que a API use a porta 8080
