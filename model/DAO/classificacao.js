@@ -11,6 +11,29 @@ const {PrismaClient} = require('@prisma/client')
 //instância da classe prisma client
 const prisma = new PrismaClient()
 
+//função que cadastra um filme no banco de dados
+const insertCLassificacao = async function(dadosClassificacao){
+    try {
+        let sql = `insert into tbl_classificacao(
+            faixa_etaria,
+            classificacao,
+            caracteristicas
+        )values(
+            '${dadosClassificacao.faixa_etaria}',
+            '${dadosClassificacao.classificacao}',
+            '${dadosClassificacao.caracteristicas}
+        )`
+        let rsClassificacao = await prisma.$executeRawUnsafe(sql)
+        if(rsClassificacao){
+            return true
+        }else{
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
 //função para retornar todas as classificações do banco de dados
 const selectAllClassificacoes = async function(){
     try {
@@ -22,6 +45,28 @@ const selectAllClassificacoes = async function(){
     }
 }
 
+//função para selecionar a classificação filtrando pelo id
+const selectByIdClassificacao = async function(id){
+    try {
+        //script sql
+        let sql = `select * from tbl_classificacao where id = ${id}`
+
+        //executa o script no banco de dados
+        let rsClassificacao = await prisma.$queryRawUnsafe(sql)
+
+        if(rsClassificacao){
+            return rsClassificacao
+        }else{
+            return false
+        }
+        
+    } catch (error) {
+        return false
+    }
+}
+
 module.exports = {
-    selectAllClassificacoes
+    selectAllClassificacoes,
+    selectByIdClassificacao,
+    insertCLassificacao
 }

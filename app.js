@@ -127,10 +127,20 @@ app.get('/v2/acmeFilmes/classificacoes', cors(), async function(request, respons
     //arquivo que aciona a controller para realizar a requisição
     let dadosClassificacacoes = await controllerClassificacao.getAllClassificacoes()
 
-    response.status(dadosClassificacacoes.status)
+    response.status(dadosClassificacacoes.status_code)
     response.json(dadosClassificacacoes)
 })
 
+//endpoint que busca a classificacao filtrando pelo id
+app.get('/v2/acmeFilmes/classificacao/:id', cors(), async function(request, response){
+    let idClassificacao = request.params.id
+   
+    //arquivo que aciona a controller para realizar a requisição
+    let dadosClassificacacao = await controllerClassificacao.getBuscarClassificacao(idClassificacao)
+
+    response.status(dadosClassificacacao.status_code)
+    response.json(dadosClassificacacao)
+})
 
 //Configuração para que a API use a porta 8080
 app.listen('8080', function(){
