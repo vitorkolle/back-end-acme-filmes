@@ -29,6 +29,7 @@ const controleFilmes = require ('./controller/funcoes.js')
 
 /***************************************** Import dos arquivos do controller do projeto***********************/
 const controllerFilmes = require('./controller/controller_filme.js')
+const controllerClassificacao = require('./controller/controller_classificacao.js')
 
 //Criação do App
 const app = express()
@@ -47,36 +48,7 @@ app.use((request, response, next) => {
 //Criando um objeto para controlar a chegada dos dados da requisição em formato JSON
 const bodyParserJSON =  bodyParser.json()
 
-//Criação do endpoint que retorna todos os filmes do Json
-app.get('/v1/acmeFilmes/filmes', cors(), async function(request, response, next){
-        let listaFilmes = controleFilmes.getFilmes()
-    
-        if(listaFilmes){
-            response.json(listaFilmes)
-            response.status(200)
-        }
-        else{
-            response.status(404)
-            response.json('{erro: item não encontrado}')
-        }
-})
-
-//Criação do endpoint que busca um filme do Json filtrando pelo id
-app.get('/v1/acmeFilmes/filme/:id', cors(), async function(request, response, next){
-    let id = request.params.id
-
-    let dadosFilme = controleFilmes.getFilme(id)
-
-    if(dadosFilme){
-        response.json(dadosFilme)
-        response.status(200)
-    }else{
-        response.json('{erro: item não encontrado}')
-        response.status(404)
-    }
-})
-
-/***********************************Endpoints Atuais*********************************************************** */
+/***********************************Endpoints de Filmes*********************************************************** */
 
 //Criação do endpoint que retorna todos os filmes do Banco de Dados
 app.get('/v2/acmeFilmes/filmes',cors(),async function(request, response, next){
@@ -148,6 +120,17 @@ app.put('/v2/acmeFilmes/filme/:id', cors(), bodyParserJSON, async function(reque
     response.status(resultDadosFilmeAtualizado.status_code)
     response.json(resultDadosFilmeAtualizado)
 })
+
+/***********************************Endpoints de Classificação*********************************************************** */
+//endpoint que retorna todas as classificações do banco de dados
+app.get('/v2/acmeFilmes/classificacoes', cors(), async function(request, response){
+    //arquivo que aciona a controller para realizar a requisição
+    let dadosClassificacacoes = await controllerClassificacao.getAllClassificacoes()
+
+    response.status(dadosClassificacacoes.status)
+    response.json(dadosClassificacacoes)
+})
+
 
 //Configuração para que a API use a porta 8080
 app.listen('8080', function(){
