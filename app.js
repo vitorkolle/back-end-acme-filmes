@@ -169,6 +169,19 @@ app.delete('/v2/acmeFilmes/classificacao/:id', cors(), async function(request, r
     response.status(dadosClassificacacao.status_code)
     response.json(dadosClassificacacao.message)
 })
+
+app.put('/v2/acmeFilmes/classificacao/:id', cors(), bodyParserJSON, async function(request, response){
+    let idClassificacao = request.params.id
+
+    const contentType = request.header('content-type')
+
+    const dadosBody = request.body
+
+    let resultDadosClassificacao = await controllerClassificacao.setAtualizarCLassificacao(idClassificacao, dadosBody, contentType)
+
+    response.status(resultDadosClassificacao.status_code)
+    response.json(resultDadosClassificacao)
+})
 //Configuração para que a API use a porta 8080
 app.listen('8080', function(){
   console.log('API funcionando e aguardando requisições')

@@ -77,10 +77,10 @@ const setInserirNovaClassificacao = async function (dadosClassificacao, contentT
 
             //validação do campos da requisição
             if (
-                dadosClassificacao.faixa_etaria == '' || dadosClassificacao.classificacao == '' || dadosClassificacao.caracteristicas == '' ||
-                dadosClassificacao.faixa_etaria == null || dadosClassificacao.classificacao == null || dadosClassificacao.caracteristicas == null ||
-                dadosClassificacao.faixa_etaria == undefined || dadosClassificacao.classificacao == undefined || dadosClassificacao.caracteristicas == undefined ||
-                dadosClassificacao.faixa_etaria.length > 5 || dadosClassificacao.classificacao.length > 7 || dadosClassificacao.caracteristicas.length > 10000
+                dadosClassificacao.faixa_etaria == '' || dadosClassificacao.classificacao == '' || dadosClassificacao.caracteristicas == ''                      || dadosClassificacao.foto_classificacao == ''        ||
+                dadosClassificacao.faixa_etaria == null || dadosClassificacao.classificacao == null || dadosClassificacao.caracteristicas == null                || dadosClassificacao.foto_classificacao == null      ||
+                dadosClassificacao.faixa_etaria == undefined || dadosClassificacao.classificacao == undefined || dadosClassificacao.caracteristicas == undefined || dadosClassificacao.foto_classificacao == undefined ||
+                dadosClassificacao.faixa_etaria.length > 5 || dadosClassificacao.classificacao.length > 7 || dadosClassificacao.caracteristicas.length > 10000   || dadosClassificacao.foto_classificacao.length > 300
             ) {
                 return message.ERROR_REQUIRED_FIELDS //400
             } else {
@@ -134,10 +134,59 @@ const setDeletarClassificacao = async function (id) {
     }
 }
 
+//função que atualiza ma classificação no banco de dados
+const setAtualizarCLassificacao = async function(id, dadosClassificacao, contentType){
+    try {
+        //validação do content type da requisição
+        if (String(contentType).toLowerCase() == 'application/json') {
+
+            let idLocal = id
+            const validarId = classificacaoDAO.selectByIdClassificacao(idLocal)
+            if(validarId.length > 0){
+
+            //objeto que retorna os dados da requisição
+            let novaClassificacaoJson = {}
+
+            //validação do campos da requisição
+            if (
+                dadosClassificacao.faixa_etaria == '' || dadosClassificacao.classificacao == '' || dadosClassificacao.caracteristicas == ''                      || dadosClassificacao.foto_classificacao == ''        ||
+                dadosClassificacao.faixa_etaria == null || dadosClassificacao.classificacao == null || dadosClassificacao.caracteristicas == null                || dadosClassificacao.foto_classificacao == null      ||
+                dadosClassificacao.faixa_etaria == undefined || dadosClassificacao.classificacao == undefined || dadosClassificacao.caracteristicas == undefined || dadosClassificacao.foto_classificacao == undefined ||
+                dadosClassificacao.faixa_etaria.length > 5 || dadosClassificacao.classificacao.length > 7 || dadosClassificacao.caracteristicas.length > 10000   || dadosClassificacao.foto_classificacao.length > 300
+            ) {
+                return message.ERROR_REQUIRED_FIELDS //400
+            }
+            else{
+                dadosClassificacao.id = idLocal
+                let atualizaClassificacao = classificacaoDAO.updateClassificacao(dadosClassificacao)
+
+                if(atualizaClassificacao){
+                    novaClassificacaoJson.classificacao = dadosClassificacao
+                    novaClassificacaoJson.status = message.SUCCESS_UPDATED_ITEM
+                    novaClassificacaoJson.status_code = message.SUCCESS_UPDATED_ITEM.status_code
+                    novaClassificacaoJson.message = message.SUCCESS_UPDATED_ITEM.message
+
+                    return novaClassificacaoJson
+                }else{
+                    return message.ERROR_INTERNAL_SERVER_DB //500
+                }
+
+            }
+        }else{
+            return message.ERROR_NOT_FOUND //404
+        }
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER //500 controller
+    }
+
+}
+
 
 module.exports = {
     getAllClassificacoes,
     getBuscarClassificacao,
     setInserirNovaClassificacao,
-    setDeletarClassificacao
+    setDeletarClassificacao,
+    setAtualizarCLassificacao
 }

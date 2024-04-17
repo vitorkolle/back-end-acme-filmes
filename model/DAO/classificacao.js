@@ -18,11 +18,13 @@ const insertCLassificacao = async function(dadosClassificacao){
         let sql = `insert into tbl_classificacao(
             faixa_etaria,
             classificacao,
-            caracteristicas
+            caracteristicas,
+            foto_classificacao
         )values(
             '${dadosClassificacao.faixa_etaria}',
             '${dadosClassificacao.classificacao}',
-            '${dadosClassificacao.caracteristicas}'
+            '${dadosClassificacao.caracteristicas}',
+            '${dadosClassificacao.foto_classificacao}'
         )`
         let rsClassificacao = await prisma.$executeRawUnsafe(sql)
         if(rsClassificacao){
@@ -86,9 +88,43 @@ const deleteClassificacao = async function(id){
     }
 }
 
+//função que atualiza uma classificação do banco de dados filtrando pelo id
+const updateClassificacao = async function(dadosClassificacao){
+    try {
+        //script sql
+        let sql = 
+        ` update tbl_classificacao
+                       set
+                       faixa_etaria = '${dadosClassificacao.faixa_etaria}',
+                       classificacao = '${dadosClassificacao.classificacao}',
+                       caracteristicas = '${dadosClassificacao.caracteristicas}',
+                       foto_classificacao = '${dadosClassificacao.foto_classificacao}'
+                       
+                       where id = ${dadosClassificacao.id} `
+
+                       console.log(sql)
+
+        //executar script no banco de dados
+        let rsClassificacao = await prisma.$executeRawUnsafe(sql)
+
+        //verificar se os dados foram cadastrados
+        if(rsClassificacao){
+            return rsClassificacao
+        }
+        else{
+            return false
+        }
+        
+    } catch (error) {
+        return false
+    }
+
+}
+
 module.exports = {
     selectAllClassificacoes,
     selectByIdClassificacao,
     insertCLassificacao,
-    deleteClassificacao
+    deleteClassificacao,
+    updateClassificacao
 }
