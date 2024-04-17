@@ -158,6 +158,17 @@ app.post('/v2/acmeFilmes/classificacao', cors(), bodyParserJSON, async function(
     response.status(resultDadosClassificacao.status_code)
     response.json(resultDadosClassificacao)
 })
+
+//endpoint que deleta uma classificação do banco de dados
+app.delete('/v2/acmeFilmes/classificacao/:id', cors(), async function(request, response){
+    //variável local que recebe id da requisição
+    let id = request.params.id
+    //variável que realiza a requisição
+    let dadosClassificacacao = await controllerClassificacao.setDeletarClassificacao(id)
+
+    response.status(dadosClassificacacao.status_code)
+    response.json(dadosClassificacacao.message)
+})
 //Configuração para que a API use a porta 8080
 app.listen('8080', function(){
   console.log('API funcionando e aguardando requisições')

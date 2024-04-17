@@ -11,7 +11,7 @@ const {PrismaClient} = require('@prisma/client')
 //instância da classe prisma client
 const prisma = new PrismaClient()
 
-//função que cadastra um filme no banco de dados
+//função que cadastra uma classificação no banco de dados
 const insertCLassificacao = async function(dadosClassificacao){
     try {
         //script sql
@@ -66,8 +66,29 @@ const selectByIdClassificacao = async function(id){
     }
 }
 
+//função para deletar classificação no banco de dados
+const deleteClassificacao = async function(id){
+    try {
+        //script sql
+        let sql = `delete from tbl_classificacao where id = ${id}`
+
+        //variável que aciona o prisma no banco de dados
+        const rsClassificacao = await prisma.$executeRawUnsafe(sql)
+
+        if(rsClassificacao){
+            return rsClassificacao
+        }else{
+            return false
+        }
+        
+    } catch (error) {
+        return false
+    }
+}
+
 module.exports = {
     selectAllClassificacoes,
     selectByIdClassificacao,
-    insertCLassificacao
+    insertCLassificacao,
+    deleteClassificacao
 }

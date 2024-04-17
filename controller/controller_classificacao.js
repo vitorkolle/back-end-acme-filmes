@@ -11,7 +11,7 @@ const message = require('../modulo/config.js')
 const classificacaoDAO = require('../model/DAO/classificacao.js')
 
 //criação da função que lista todas as classificações
-const getAllClassificacoes = async function(){
+const getAllClassificacoes = async function () {
     //JSON que vai guardar os dados das classificações
     const classificacoesJson = {}
 
@@ -19,25 +19,25 @@ const getAllClassificacoes = async function(){
     let dadosClassificacacoes = await classificacaoDAO.selectAllClassificacoes()
 
     //verificar se a DAO retornou dados
-    if(dadosClassificacacoes){
+    if (dadosClassificacacoes) {
         //verificar quantos dados a DAO retornou
-        if(dadosClassificacacoes.length > 0){
+        if (dadosClassificacacoes.length > 0) {
             classificacoesJson.classificacoes = dadosClassificacacoes
             classificacoesJson.quantidade = dadosClassificacacoes.length
             classificacoesJson.status_code = 200
 
             return classificacoesJson
-        }else{
+        } else {
             return message.ERROR_NOT_FOUND //404
         }
-    }else{
+    } else {
         return message.ERROR_INTERNAL_SERVER_DB //500
 
     }
 }
 
-//função que busca um filme no banco de dados filtrando pelo id
-const getBuscarClassificacao = async function(id){
+//função que busca uma classificação no banco de dados filtrando pelo id
+const getBuscarClassificacao = async function (id) {
     //recebe o id da classificacao
     let idClassificacao = id
 
@@ -45,50 +45,50 @@ const getBuscarClassificacao = async function(id){
     let classificacaoJSON = {}
 
     //validar se o id é válido
-    if(idClassificacao == '' || idClassificacao == undefined || isNaN(idClassificacao)){
+    if (idClassificacao == '' || idClassificacao == undefined || isNaN(idClassificacao)) {
         return message.ERROR_INVALID_ID //400
-    }else{
+    } else {
         let dadosClassificacao = await classificacaoDAO.selectByIdClassificacao(idClassificacao)
 
-        if(dadosClassificacao){
-            if(dadosClassificacao.length > 0){
+        if (dadosClassificacao) {
+            if (dadosClassificacao.length > 0) {
                 classificacaoJSON.classificacao = dadosClassificacao
                 classificacaoJSON.status_code = 200
-                
+
 
                 return classificacaoJSON
-            }else{
+            } else {
                 return message.ERROR_NOT_FOUND //400
             }
-        }else{
+        } else {
             return message.ERROR_INTERNAL_SERVER_DB //500
         }
     }
 
 }
 
-//função que insere um filme no banco de dados
-const setInserirNovaClassificacao = async function(dadosClassificacao, contentType){
+//função que insere uma classificação no banco de dados
+const setInserirNovaClassificacao = async function (dadosClassificacao, contentType) {
     try {
         //validação do content type da requisição
-        if(String(contentType).toLowerCase() == 'application/json'){ 
+        if (String(contentType).toLowerCase() == 'application/json') {
             //objeto que retorna os dados da requisição
             let novaClassificacaoJson = {}
-            
+
             //validação do campos da requisição
-            if(
-                dadosClassificacao.faixa_etaria == ''        || dadosClassificacao.classificacao == ''        || dadosClassificacao.caracteristicas == ''        ||
-                dadosClassificacao.faixa_etaria == null      || dadosClassificacao.classificacao == null      || dadosClassificacao.caracteristicas == null      ||
+            if (
+                dadosClassificacao.faixa_etaria == '' || dadosClassificacao.classificacao == '' || dadosClassificacao.caracteristicas == '' ||
+                dadosClassificacao.faixa_etaria == null || dadosClassificacao.classificacao == null || dadosClassificacao.caracteristicas == null ||
                 dadosClassificacao.faixa_etaria == undefined || dadosClassificacao.classificacao == undefined || dadosClassificacao.caracteristicas == undefined ||
-                dadosClassificacao.faixa_etaria.length > 5   || dadosClassificacao.classificacao.length > 7   || dadosClassificacao.caracteristicas.length > 10000  
-            ){
+                dadosClassificacao.faixa_etaria.length > 5 || dadosClassificacao.classificacao.length > 7 || dadosClassificacao.caracteristicas.length > 10000
+            ) {
                 return message.ERROR_REQUIRED_FIELDS //400
-            }else{
+            } else {
                 //enacaminha dados para o banco de dados inserir a nova classificação
                 let novaClassificacao = await classificacaoDAO.insertCLassificacao(dadosClassificacao)
 
                 //validação para verificar se a DAO inseriu dados
-                if(novaClassificacao){
+                if (novaClassificacao) {
                     novaClassificacaoJson.classificacao = dadosClassificacao
                     novaClassificacaoJson.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     novaClassificacaoJson.status = message.SUCCESS_CREATED_ITEM.message
@@ -96,19 +96,48 @@ const setInserirNovaClassificacao = async function(dadosClassificacao, contentTy
                     return novaClassificacaoJson //201
                 }
             }
-        }else{
+        } else {
             return message.ERROR_CONTENT_TYPE //415
         }
-        
+
     } catch (error) {
         return message.ERROR_INTERNAL_SERVER //500
     }
 
 }
 
+//função que deleta uma classificação do banco de dados
+const setDeletarClassificacao = async function (id) {
+    //variável local que recebe o id
+    let idClassificacao = id
+
+    //verificar se o id existe no banco de dados
+    let validarId = await classificacaoDAO.selectByIdClassificacao(idClassificacao)
+    if (validarId.length > 0) {
+        //validar se o id é válido
+        if (idClassificacao == null || idClassificacao == '' || idClassificacao == undefined){
+            return message.ERROR_INVALID_ID //400
+        }
+        else{
+            let dadosClassificacacao = await classificacaoDAO.deleteClassificacao(idClassificacao)
+
+            if(dadosClassificacacao){
+                return message.SUCCESS_DELETED_ITEM //200
+            }
+            else{
+                return message.ERROR_INTERNAL_SERVER_DB //500
+            }
+        }
+    } 
+    else {
+        return message.ERROR_NOT_FOUND //404
+    }
+}
+
 
 module.exports = {
     getAllClassificacoes,
     getBuscarClassificacao,
-    setInserirNovaClassificacao
+    setInserirNovaClassificacao,
+    setDeletarClassificacao
 }
