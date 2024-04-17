@@ -32,7 +32,7 @@ const controllerFilmes = require('./controller/controller_filme.js')
 const controllerClassificacao = require('./controller/controller_classificacao.js')
 
 //Criação do App
-const app = express()
+const app = express() 
 
 //Mostrar como usar o App
 app.use((request, response, next) => {
@@ -122,6 +122,7 @@ app.put('/v2/acmeFilmes/filme/:id', cors(), bodyParserJSON, async function(reque
 })
 
 /***********************************Endpoints de Classificação*********************************************************** */
+
 //endpoint que retorna todas as classificações do banco de dados
 app.get('/v2/acmeFilmes/classificacoes', cors(), async function(request, response){
     //arquivo que aciona a controller para realizar a requisição
@@ -142,6 +143,21 @@ app.get('/v2/acmeFilmes/classificacao/:id', cors(), async function(request, resp
     response.json(dadosClassificacacao)
 })
 
+//endpoint que cadastra uma nova classificação no banco de dados
+app.post('/v2/acmeFilmes/classificacao', cors(), bodyParserJSON, async function(request, response){
+    //variável que vai realizar o tratamento do tipo do body
+    const contentType = request.header('content-type')
+
+    //variável que recebe os dados do Json do body
+    let dadosBody = request.body
+
+    //variável que vai realizar a requisição
+    let resultDadosClassificacao = await controllerClassificacao.setInserirNovaClassificacao(dadosBody, contentType)
+
+    //return da requisição
+    response.status(resultDadosClassificacao.status_code)
+    response.json(resultDadosClassificacao)
+})
 //Configuração para que a API use a porta 8080
 app.listen('8080', function(){
   console.log('API funcionando e aguardando requisições')

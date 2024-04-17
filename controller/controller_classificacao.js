@@ -71,10 +71,10 @@ const getBuscarClassificacao = async function(id){
 const setInserirNovaClassificacao = async function(dadosClassificacao, contentType){
     try {
         //validação do content type da requisição
-        if(String(contentType).toLowerCase() == 'application/json'){
+        if(String(contentType).toLowerCase() == 'application/json'){ 
             //objeto que retorna os dados da requisição
             let novaClassificacaoJson = {}
-
+            
             //validação do campos da requisição
             if(
                 dadosClassificacao.faixa_etaria == ''        || dadosClassificacao.classificacao == ''        || dadosClassificacao.caracteristicas == ''        ||
@@ -84,12 +84,24 @@ const setInserirNovaClassificacao = async function(dadosClassificacao, contentTy
             ){
                 return message.ERROR_REQUIRED_FIELDS //400
             }else{
+                //enacaminha dados para o banco de dados inserir a nova classificação
                 let novaClassificacao = await classificacaoDAO.insertCLassificacao(dadosClassificacao)
+
+                //validação para verificar se a DAO inseriu dados
+                if(novaClassificacao){
+                    novaClassificacaoJson.classificacao = dadosClassificacao
+                    novaClassificacaoJson.status_code = message.SUCCESS_CREATED_ITEM.status_code
+                    novaClassificacaoJson.status = message.SUCCESS_CREATED_ITEM.message
+
+                    return novaClassificacaoJson //201
+                }
             }
+        }else{
+            return message.ERROR_CONTENT_TYPE //415
         }
         
     } catch (error) {
-        
+        return message.ERROR_INTERNAL_SERVER //500
     }
 
 }
@@ -97,5 +109,6 @@ const setInserirNovaClassificacao = async function(dadosClassificacao, contentTy
 
 module.exports = {
     getAllClassificacoes,
-    getBuscarClassificacao
+    getBuscarClassificacao,
+    setInserirNovaClassificacao
 }

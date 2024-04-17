@@ -6,7 +6,7 @@
  *********************************************************************************************************************/
 
 //import da biblioteca prisma client
-const {PrismaClient} = require('@prisma/client')
+const {PrismaClient} = require('@prisma/client') 
 
 //instância da classe prisma client
 const prisma = new PrismaClient()
@@ -14,6 +14,7 @@ const prisma = new PrismaClient()
 //função que cadastra um filme no banco de dados
 const insertCLassificacao = async function(dadosClassificacao){
     try {
+        //script sql
         let sql = `insert into tbl_classificacao(
             faixa_etaria,
             classificacao,
@@ -21,7 +22,7 @@ const insertCLassificacao = async function(dadosClassificacao){
         )values(
             '${dadosClassificacao.faixa_etaria}',
             '${dadosClassificacao.classificacao}',
-            '${dadosClassificacao.caracteristicas}
+            '${dadosClassificacao.caracteristicas}'
         )`
         let rsClassificacao = await prisma.$executeRawUnsafe(sql)
         if(rsClassificacao){
