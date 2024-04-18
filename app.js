@@ -1,7 +1,7 @@
 /************************************************************************************************************
  * Objetivo: Arquivo responsável pela criação de API no projeto
  * Data: 25/01
- * Autor: Vitor Paes Kolle
+ * Autor: Vitor Paes Kolle 
  * Versão: 1.0 
  ***********************************************************************************************************/
 /**
@@ -30,6 +30,7 @@ const controleFilmes = require ('./controller/funcoes.js')
 /***************************************** Import dos arquivos do controller do projeto***********************/
 const controllerFilmes = require('./controller/controller_filme.js')
 const controllerClassificacao = require('./controller/controller_classificacao.js')
+const controllerGenero = require('./controller/controller_genero.js')
 
 //Criação do App
 const app = express() 
@@ -121,6 +122,8 @@ app.put('/v2/acmeFilmes/filme/:id', cors(), bodyParserJSON, async function(reque
     response.json(resultDadosFilmeAtualizado)
 })
 
+
+
 /***********************************Endpoints de Classificação*********************************************************** */
 
 //endpoint que retorna todas as classificações do banco de dados
@@ -182,6 +185,31 @@ app.put('/v2/acmeFilmes/classificacao/:id', cors(), bodyParserJSON, async functi
     response.status(resultDadosClassificacao.status_code)
     response.json(resultDadosClassificacao)
 })
+
+
+/***********************************Endpoints de Gênero************************************************************/
+//endpoint que retorna todos os gêneros do banco de dados
+app.get('/v2/acmeFilmes/generos', cors(), async function(request, response){
+    //requisição do app para retornar todos os gêneros
+    let resultDadosGeneros = await controllerGenero.getALlGeneros()
+
+    response.status(resultDadosGeneros.status_code)
+    response.json(resultDadosGeneros)
+})
+
+//endpoint que retorna um gênero filtrando pelo id
+app.get('/v2/acmeFilmes/genero/:id', cors(), async function(request, response){
+    let idGenero = request.params.id
+
+    let resultDadosGenero = await controllerGenero.getBuscarGenero(idGenero)
+
+    response.status(resultDadosGenero.status_code)
+    response.json(resultDadosGenero)
+})
+
+
+
+
 //Configuração para que a API use a porta 8080
 app.listen('8080', function(){
   console.log('API funcionando e aguardando requisições')

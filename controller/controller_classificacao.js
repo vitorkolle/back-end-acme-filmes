@@ -1,5 +1,5 @@
 /************************************************************************************************************
- * Objetivo: Arquivo responsável pela validação, consisitência de dados das requisições da API de filmes
+ * Objetivo: Arquivo responsável pela validação, consisitência de dados das requisições da API de classificações
  * Data: 11/04
  * Autor: Vitor Paes Kolle
  * Versão: 1.0 
