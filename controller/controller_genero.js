@@ -89,8 +89,33 @@ const setCadastrarGenero = async function(dadosGenero, contentType){
     }
 }
 
+//função que deleta um filme do banco de dados filtrando pelo id
+const setDeletarGenero = async function(id){
+    let idGenero = id
+
+    const validarId = await generoDAO.selectByIdGenero(idGenero)
+    
+    if(validarId.length > 0){
+        if(idGenero == '' || idGenero == null || isNaN(idGenero)){
+            return message.ERROR_INVALID_ID //400
+        }else{
+            let dadosGenero = await generoDAO.deleteGenero(id)
+    
+            if(dadosGenero){
+                return message.SUCCESS_DELETED_ITEM //200
+            }else{
+                return message.ERROR_INTERNAL_SERVER_DB //500
+            }
+        }
+    }
+    else{
+        return message.ERROR_NOT_FOUND //404
+    }
+}
+
 module.exports = {
     getListarALlGeneros,
     getBuscarGenero,
-    setCadastrarGenero
+    setCadastrarGenero,
+    setDeletarGenero
 }

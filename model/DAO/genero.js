@@ -70,9 +70,27 @@ const insertGenero = async function(dadosGenero){
     }
 }
 
+//função que deleta um filme do banco de dados filtrando pelo id
+const deleteGenero = async function(id){
+    try {
+        let sql = `delete from tbl_genero where id = ${id}`
+
+        let rsGenero = await prisma.$queryRawUnsafe(sql)
+
+        if(rsGenero){
+            return rsGenero
+        }else{
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
 
 module.exports = {
     selectAllGeneros,
     selectByIdGenero,
-    insertGenero
+    insertGenero,
+    deleteGenero
 }

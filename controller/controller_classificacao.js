@@ -121,9 +121,9 @@ const setDeletarClassificacao = async function (id) {
             return message.ERROR_INVALID_ID //400
         }
         else{
-            let dadosClassificacacao = await classificacaoDAO.deleteClassificacao(idClassificacao)
+            let dadosClassificacao = await classificacaoDAO.deleteClassificacao(idClassificacao)
 
-            if(dadosClassificacacao){
+            if(dadosClassificacao){
                 return message.SUCCESS_DELETED_ITEM //200
             }
             else{
