@@ -43,8 +43,36 @@ const selectByIdGenero = async function(id){
     }
 }
 
+//função que cadastra um gênero no banco de dados
+const insertGenero = async function(dadosGenero){
+    try {
+        let sql = 
+        `
+        insert into tbl_genero
+        (
+            nome, 
+            descricao_genero
+        )
+        values(
+            '${dadosGenero.nome}',
+            '${dadosGenero.descricao_genero}'
+              )
+        `
+        let rsGenero = await prisma.$queryRawUnsafe(sql)
+
+        if(rsGenero){
+            return rsGenero
+        }else{
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
 
 module.exports = {
     selectAllGeneros,
-    selectByIdGenero
+    selectByIdGenero,
+    insertGenero
 }

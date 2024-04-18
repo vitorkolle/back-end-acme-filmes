@@ -94,6 +94,8 @@ const setInserirNovaClassificacao = async function (dadosClassificacao, contentT
                     novaClassificacaoJson.status = message.SUCCESS_CREATED_ITEM.message
 
                     return novaClassificacaoJson //201
+                }else{
+                    return message.ERROR_INTERNAL_SERVER_DB //500
                 }
             }
         } else {

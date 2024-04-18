@@ -191,7 +191,7 @@ app.put('/v2/acmeFilmes/classificacao/:id', cors(), bodyParserJSON, async functi
 //endpoint que retorna todos os gêneros do banco de dados
 app.get('/v2/acmeFilmes/generos', cors(), async function(request, response){
     //requisição do app para retornar todos os gêneros
-    let resultDadosGeneros = await controllerGenero.getALlGeneros()
+    let resultDadosGeneros = await controllerGenero.getListarALlGeneros()
 
     response.status(resultDadosGeneros.status_code)
     response.json(resultDadosGeneros)
@@ -202,6 +202,18 @@ app.get('/v2/acmeFilmes/genero/:id', cors(), async function(request, response){
     let idGenero = request.params.id
 
     let resultDadosGenero = await controllerGenero.getBuscarGenero(idGenero)
+
+    response.status(resultDadosGenero.status_code)
+    response.json(resultDadosGenero)
+})
+
+//endpoint que cadstra um gênero no banco de dados
+app.post('/v2/acmeFilmes/genero', cors(), bodyParserJSON, async function(request, response){
+    const contentType = request.header('content-type')
+
+    const dadosGenero = request.body
+
+    let resultDadosGenero = await controllerGenero.setCadastrarGenero(dadosGenero, contentType)
 
     response.status(resultDadosGenero.status_code)
     response.json(resultDadosGenero)

@@ -31,6 +31,7 @@ const getListarALlGeneros = async function () {
     }
 }
 
+//função que retorna um gênero filtrando pelo id
 const getBuscarGenero = async function(id){
     let idGenero = id
 
@@ -56,7 +57,40 @@ const getBuscarGenero = async function(id){
     }
 }
 
+//função que cadastra um gênero no banco de dados
+const setCadastrarGenero = async function(dadosGenero, contentType){
+    try {
+        if(contentType == 'application/json'){
+            let novoGeneroJson = {}
+
+            if(
+                dadosGenero.nome == '' || dadosGenero.nome == null || dadosGenero.nome == undefined || dadosGenero.nome.length > 70 ||
+                dadosGenero.descricao_genero == '' || dadosGenero.descricao_genero == null || dadosGenero.descricao_genero == undefined 
+            ){
+                return message.ERROR_REQUIRED_FIELDS //400
+            }else{
+                let novoGenero = await generoDAO.insertGenero(dadosGenero)
+
+                if(novoGenero){
+                    novoGeneroJson.genero = dadosGenero
+                    novoGeneroJson.status_code = message.SUCCESS_CREATED_ITEM.status_code
+                    novoGeneroJson.message = message.SUCCESS_CREATED_ITEM.message
+
+                    return novoGeneroJson
+                }else{
+                    return message.ERROR_INTERNAL_SERVER_DB //500
+                }
+            }
+        }else{
+            return message.ERROR_CONTENT_TYPE //415
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER //500
+    }
+}
+
 module.exports = {
     getListarALlGeneros,
-    getBuscarGenero
+    getBuscarGenero,
+    setCadastrarGenero
 }
