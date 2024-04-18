@@ -31,6 +31,7 @@ const controleFilmes = require ('./controller/funcoes.js')
 const controllerFilmes = require('./controller/controller_filme.js')
 const controllerClassificacao = require('./controller/controller_classificacao.js')
 const controllerGenero = require('./controller/controller_genero.js')
+const { warnEnvConflicts } = require('@prisma/client/runtime/library')
 
 //Criação do App
 const app = express() 
@@ -224,6 +225,18 @@ app.delete('/v2/acmeFilmes/genero/:id', cors(), async function(request, response
     let generoId = request.params.id
 
     let resultDadosGenero = await controllerGenero.setDeletarGenero(generoId)
+
+    response.status(resultDadosGenero.status_code)
+    response.json(resultDadosGenero)
+})
+
+//endpoint que atualiza um filme do banco de dados filtrando pelo id
+app.put('/v2/acmeFilmes/genero/:id', cors(), bodyParserJSON, async function(request, response){
+    let generoId = request.params.id
+    const contentType = request.header('content-type')
+    const dadosGenero = request.body
+
+    let resultDadosGenero = await controllerGenero.setAtualizarGenero(generoId, dadosGenero, contentType)
 
     response.status(resultDadosGenero.status_code)
     response.json(resultDadosGenero)

@@ -14,7 +14,7 @@ const getListarALlGeneros = async function () {
     const generosJson = {}
 
     let dadosGenero = await generoDAO.selectAllGeneros()
-   
+
     if (dadosGenero) {
         if (dadosGenero.length > 0) {
             generosJson.generos = dadosGenero
@@ -23,7 +23,7 @@ const getListarALlGeneros = async function () {
 
             return generosJson
         }
-        else{
+        else {
             return message.ERROR_NOT_FOUND //404
         }
     } else {
@@ -32,56 +32,56 @@ const getListarALlGeneros = async function () {
 }
 
 //função que retorna um gênero filtrando pelo id
-const getBuscarGenero = async function(id){
+const getBuscarGenero = async function (id) {
     let idGenero = id
 
     const generoJson = {}
 
-    if(idGenero == '' || idGenero == null || isNaN(idGenero)){
+    if (idGenero == '' || idGenero == null || isNaN(idGenero)) {
         return message.ERROR_INVALID_ID //400
-    }else{
+    } else {
         let dadosGenero = await generoDAO.selectByIdGenero(idGenero)
 
-        if(dadosGenero){
-            if(dadosGenero.length > 0){
+        if (dadosGenero) {
+            if (dadosGenero.length > 0) {
                 generoJson.genero = dadosGenero
                 generoJson.status_code = 200
 
                 return generoJson
-            }else{
+            } else {
                 return message.ERROR_NOT_FOUND //404
             }
-        }else{
+        } else {
             return message.ERROR_INTERNAL_SERVER_DB //500
         }
     }
 }
 
 //função que cadastra um gênero no banco de dados
-const setCadastrarGenero = async function(dadosGenero, contentType){
+const setCadastrarGenero = async function (dadosGenero, contentType) {
     try {
-        if(contentType == 'application/json'){
+        if (String(contentType).toLowerCase == 'application/json') {
             let novoGeneroJson = {}
 
-            if(
+            if (
                 dadosGenero.nome == '' || dadosGenero.nome == null || dadosGenero.nome == undefined || dadosGenero.nome.length > 70 ||
-                dadosGenero.descricao_genero == '' || dadosGenero.descricao_genero == null || dadosGenero.descricao_genero == undefined 
-            ){
+                dadosGenero.descricao_genero == '' || dadosGenero.descricao_genero == null || dadosGenero.descricao_genero == undefined
+            ) {
                 return message.ERROR_REQUIRED_FIELDS //400
-            }else{
+            } else {
                 let novoGenero = await generoDAO.insertGenero(dadosGenero)
 
-                if(novoGenero){
+                if (novoGenero) {
                     novoGeneroJson.genero = dadosGenero
                     novoGeneroJson.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     novoGeneroJson.message = message.SUCCESS_CREATED_ITEM.message
 
                     return novoGeneroJson
-                }else{
+                } else {
                     return message.ERROR_INTERNAL_SERVER_DB //500
                 }
             }
-        }else{
+        } else {
             return message.ERROR_CONTENT_TYPE //415
         }
     } catch (error) {
@@ -89,27 +89,69 @@ const setCadastrarGenero = async function(dadosGenero, contentType){
     }
 }
 
-//função que deleta um filme do banco de dados filtrando pelo id
-const setDeletarGenero = async function(id){
+//função que deleta um gênero do banco de dados filtrando pelo id
+const setDeletarGenero = async function (id) {
     let idGenero = id
 
     const validarId = await generoDAO.selectByIdGenero(idGenero)
-    
-    if(validarId.length > 0){
-        if(idGenero == '' || idGenero == null || isNaN(idGenero)){
+
+    if (validarId.length > 0) {
+        if (idGenero == '' || idGenero == null || isNaN(idGenero)) {
             return message.ERROR_INVALID_ID //400
-        }else{
+        } else {
             let dadosGenero = await generoDAO.deleteGenero(id)
-    
-            if(dadosGenero){
+
+            if (dadosGenero) {
                 return message.SUCCESS_DELETED_ITEM //200
-            }else{
+            } else {
                 return message.ERROR_INTERNAL_SERVER_DB //500
             }
         }
     }
-    else{
+    else {
         return message.ERROR_NOT_FOUND //404
+    }
+}
+
+//função que atualiza um gênero do banco de dados
+const setAtualizarGenero = async function (id, dadosGenero, contentType) {
+    try {
+        let idGenero = id
+
+        let validarId = await generoDAO.selectByIdGenero(idGenero)
+
+        if (String(contentType).toLowerCase() == 'application/json') {
+            if (validarId.length > 0) {
+                let novoGeneroJson = {}
+                if (
+                    dadosGenero.nome == '' || dadosGenero.nome == null || dadosGenero.nome == undefined || dadosGenero.nome.length > 70 ||
+                    dadosGenero.descricao_genero == '' || dadosGenero.descricao_genero == null || dadosGenero.descricao_genero == undefined
+                ){
+                    return message.ERROR_REQUIRED_FIELDS //400
+                }
+                else{
+                    dadosGenero.id = idGenero
+                    const novosDadosGenero = await generoDAO.updateGenero(dadosGenero)
+                    
+                    if(novosDadosGenero){
+                        novoGeneroJson.genero = novosDadosGenero.genero
+                        novoGeneroJson.status = message.SUCCESS_UPDATED_ITEM
+                        novoGeneroJson.status_code = message.SUCCESS_UPDATED_ITEM.status_code
+                        novoGeneroJson.message = message.SUCCESS_UPDATED_ITEM.message
+
+                        return novoGeneroJson
+                    }else{
+                        return message.ERROR_INTERNAL_SERVER_DB //500
+                    }
+                }
+            }else{
+                return message.ERROR_NOT_FOUND //404
+            }
+        } else {
+            return message.ERROR_CONTENT_TYPE //415
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER //500 controller
     }
 }
 
@@ -117,5 +159,6 @@ module.exports = {
     getListarALlGeneros,
     getBuscarGenero,
     setCadastrarGenero,
-    setDeletarGenero
+    setDeletarGenero,
+    setAtualizarGenero
 }

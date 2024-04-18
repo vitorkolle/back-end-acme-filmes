@@ -21,6 +21,19 @@ insert into tbl_classificacao(faixa_etaria, classificacao, caracteristicas)value
 Sexo e Nudez: Conteúdo educativo sobre sexo.
 Drogas: Descrição do consumo de droga lícita; Discussão sobre o tema tráfico de drogas; Uso medicinal de droga ilícita.' 
 );
+alter table tbl_classificacao
+add column foto_classificacao varchar(300) not null;
+insert into tbl_classificacao(
+            faixa_etaria,
+            classificacao,
+            caracteristicas,
+            foto_classificacao
+        )values(
+            '0-10',
+            'test',
+            'sheibfierhbgierbierb',
+            'https://www.gov.br/mj/pt-br/assuntos/seus-direitos/classificacao-1/simbolos-de-autoclassificacao/nr14-auto.png/@@images/image'
+        );
 select * from tbl_classificacao;
 delete from tbl_classificacao where id = '3';
 select * from tbl_classificacao where id = 4;
@@ -30,6 +43,18 @@ id integer not null primary key auto_increment,
 nome varchar(70) not null,
 descricao_genero text not null
 );
+insert into tbl_genero(nome, descricao_genero)values
+(
+'Terror',
+'Gênero que causa medo'
+);
+select * from tbl_genero;
+select * from tbl_genero where id = 1;
+update tbl_genero
+			set
+            nome = "testeP",
+            descricao_genero = "sjkgbrjgb"
+            where id = 1;
 
 create table tbl_genero_filme(
 id integer not null primary key auto_increment,

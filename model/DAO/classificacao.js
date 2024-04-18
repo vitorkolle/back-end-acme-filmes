@@ -26,6 +26,7 @@ const insertCLassificacao = async function(dadosClassificacao){
             '${dadosClassificacao.caracteristicas}',
             '${dadosClassificacao.foto_classificacao}'
         )`
+
         let rsClassificacao = await prisma.$executeRawUnsafe(sql)
         if(rsClassificacao){
             return true
@@ -101,8 +102,6 @@ const updateClassificacao = async function(dadosClassificacao){
                        foto_classificacao = '${dadosClassificacao.foto_classificacao}'
                        
                        where id = ${dadosClassificacao.id} `
-
-                       console.log(sql)
 
         //executar script no banco de dados
         let rsClassificacao = await prisma.$executeRawUnsafe(sql)

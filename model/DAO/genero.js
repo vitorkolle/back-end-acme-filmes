@@ -70,11 +70,36 @@ const insertGenero = async function(dadosGenero){
     }
 }
 
-//função que deleta um filme do banco de dados filtrando pelo id
+//função que deleta um gênero do banco de dados filtrando pelo id
 const deleteGenero = async function(id){
     try {
         let sql = `delete from tbl_genero where id = ${id}`
 
+        let rsGenero = await prisma.$queryRawUnsafe(sql)
+
+        if(rsGenero){
+            return rsGenero
+        }else{
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
+//função que atualiza um gênero no banco de dados
+const updateGenero = async function(dadosGenero){
+    try {
+        let sql = 
+        `
+        update tbl_genero
+                    set
+                    nome = '${dadosGenero.nome}',
+                    descricao_genero = '${dadosGenero.descricao_genero}'
+                    
+                    where id = ${dadosGenero.id}
+        `
+        
         let rsGenero = await prisma.$queryRawUnsafe(sql)
 
         if(rsGenero){
@@ -92,5 +117,6 @@ module.exports = {
     selectAllGeneros,
     selectByIdGenero,
     insertGenero,
-    deleteGenero
+    deleteGenero,
+    updateGenero
 }

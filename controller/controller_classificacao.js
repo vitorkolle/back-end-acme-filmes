@@ -143,7 +143,7 @@ const setAtualizarCLassificacao = async function(id, dadosClassificacao, content
         if (String(contentType).toLowerCase() == 'application/json') {
 
             let idLocal = id
-            const validarId = classificacaoDAO.selectByIdClassificacao(idLocal)
+            const validarId = await classificacaoDAO.selectByIdClassificacao(idLocal)
             if(validarId.length > 0){
 
             //objeto que retorna os dados da requisição
