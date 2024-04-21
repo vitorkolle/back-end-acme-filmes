@@ -227,7 +227,7 @@ app.delete('/v2/acmeFilmes/genero/:id', cors(), async function(request, response
     let resultDadosGenero = await controllerGenero.setDeletarGenero(generoId)
 
     response.status(resultDadosGenero.status_code)
-    response.json(resultDadosGenero)
+    response.json(resultDadosGenero.message)
 })
 
 //endpoint que atualiza um filme do banco de dados filtrando pelo id

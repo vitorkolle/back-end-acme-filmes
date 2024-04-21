@@ -7,7 +7,7 @@
 //import do arquivo que possui as mensagens padrão
 const message = require('../modulo/config.js')
 
-//import do arquivo que realizará as requisições ao banco de dados
+//import do arquivo que realizará as requisições ao banco de dad os
 const classificacaoDAO = require('../model/DAO/classificacao.js')
 
 //criação da função que lista todas as classificações
@@ -86,9 +86,11 @@ const setInserirNovaClassificacao = async function (dadosClassificacao, contentT
             } else {
                 //enacaminha dados para o banco de dados inserir a nova classificação
                 let novaClassificacao = await classificacaoDAO.insertCLassificacao(dadosClassificacao)
+                let novoId = await classificacaoDAO.selectIdLastClassificacao()
 
                 //validação para verificar se a DAO inseriu dados
                 if (novaClassificacao) {
+                    novaClassificacaoJson.id = Number(novoId[0].id)
                     novaClassificacaoJson.classificacao = dadosClassificacao
                     novaClassificacaoJson.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     novaClassificacaoJson.status = message.SUCCESS_CREATED_ITEM.message
@@ -143,6 +145,7 @@ const setAtualizarCLassificacao = async function(id, dadosClassificacao, content
         if (String(contentType).toLowerCase() == 'application/json') {
 
             let idLocal = id
+            
             const validarId = await classificacaoDAO.selectByIdClassificacao(idLocal)
             if(validarId.length > 0){
 
@@ -160,7 +163,7 @@ const setAtualizarCLassificacao = async function(id, dadosClassificacao, content
             }
             else{
                 dadosClassificacao.id = idLocal
-                let atualizaClassificacao = classificacaoDAO.updateClassificacao(dadosClassificacao)
+                let atualizaClassificacao = await classificacaoDAO.updateClassificacao(dadosClassificacao)
 
                 if(atualizaClassificacao){
                     novaClassificacaoJson.classificacao = dadosClassificacao

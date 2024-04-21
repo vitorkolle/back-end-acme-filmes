@@ -120,10 +120,27 @@ const updateClassificacao = async function(dadosClassificacao){
 
 }
 
+const selectIdLastClassificacao = async function(){
+    try {
+        let sql = `select cast(last_insert_id() as decimal) as id from tbl_classificacao limit 1`
+
+        let rsId = await prisma.$queryRawUnsafe(sql)
+        if(rsId){
+            return rsId
+        }
+        else{
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
 module.exports = {
     selectAllClassificacoes,
     selectByIdClassificacao,
     insertCLassificacao,
     deleteClassificacao,
-    updateClassificacao
+    updateClassificacao,
+    selectIdLastClassificacao
 }

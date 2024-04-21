@@ -146,7 +146,7 @@ const selectIdLastFilme = async function () {
         let rsIdFilme = await prisma.$queryRawUnsafe(sql)
         return rsIdFilme
 
-    } catch (error) {
+    } catch (error) { 
         return false
     }
 }

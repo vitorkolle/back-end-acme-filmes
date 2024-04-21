@@ -11,7 +11,7 @@ const message = require('../modulo/config')
 
 //função que retorna todos os gêneros do banco de dados
 const getListarALlGeneros = async function () {
-    const generosJson = {}
+    const generosJson = {} 
 
     let dadosGenero = await generoDAO.selectAllGeneros()
 
@@ -60,7 +60,7 @@ const getBuscarGenero = async function (id) {
 //função que cadastra um gênero no banco de dados
 const setCadastrarGenero = async function (dadosGenero, contentType) {
     try {
-        if (String(contentType).toLowerCase == 'application/json') {
+        if (String(contentType).toLowerCase() == 'application/json') {
             let novoGeneroJson = {}
 
             if (
@@ -70,8 +70,10 @@ const setCadastrarGenero = async function (dadosGenero, contentType) {
                 return message.ERROR_REQUIRED_FIELDS //400
             } else {
                 let novoGenero = await generoDAO.insertGenero(dadosGenero)
+                let novoId  = await generoDAO.selectIdLastGenero()
 
                 if (novoGenero) {
+                    novoGeneroJson.id = Number(novoId[0].id)
                     novoGeneroJson.genero = dadosGenero
                     novoGeneroJson.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     novoGeneroJson.message = message.SUCCESS_CREATED_ITEM.message
@@ -116,13 +118,16 @@ const setDeletarGenero = async function (id) {
 //função que atualiza um gênero do banco de dados
 const setAtualizarGenero = async function (id, dadosGenero, contentType) {
     try {
+        if (String(contentType).toLowerCase() == 'application/json') {
+
         let idGenero = id
 
-        let validarId = await generoDAO.selectByIdGenero(idGenero)
+        const validarId = await generoDAO.selectByIdGenero(idGenero)
 
-        if (String(contentType).toLowerCase() == 'application/json') {
             if (validarId.length > 0) {
+
                 let novoGeneroJson = {}
+
                 if (
                     dadosGenero.nome == '' || dadosGenero.nome == null || dadosGenero.nome == undefined || dadosGenero.nome.length > 70 ||
                     dadosGenero.descricao_genero == '' || dadosGenero.descricao_genero == null || dadosGenero.descricao_genero == undefined
@@ -131,10 +136,10 @@ const setAtualizarGenero = async function (id, dadosGenero, contentType) {
                 }
                 else{
                     dadosGenero.id = idGenero
-                    const novosDadosGenero = await generoDAO.updateGenero(dadosGenero)
-                    
+                    let novosDadosGenero = await generoDAO.updateGenero(dadosGenero)
+
                     if(novosDadosGenero){
-                        novoGeneroJson.genero = novosDadosGenero.genero
+                        novoGeneroJson.genero = dadosGenero
                         novoGeneroJson.status = message.SUCCESS_UPDATED_ITEM
                         novoGeneroJson.status_code = message.SUCCESS_UPDATED_ITEM.status_code
                         novoGeneroJson.message = message.SUCCESS_UPDATED_ITEM.message
