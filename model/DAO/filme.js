@@ -29,7 +29,7 @@ const insertFilme = async function (dadosFilme) {
             id_favorito,
             id_classificacao
    )values(
-            '${dadosFilme.nome}',
+            '${dadosFilme.titulo}',
             '${dadosFilme.sinopse}',
             '${dadosFilme.duracao}',
             '${dadosFilme.data_lancamento}',
@@ -51,7 +51,7 @@ const insertFilme = async function (dadosFilme) {
         id_favorito,
         id_classificacao
 )values(
-        '${dadosFilme.nome}',
+        '${dadosFilme.titulo}',
         '${dadosFilme.sinopse}',
         '${dadosFilme.duracao}',
         '${dadosFilme.data_lancamento}',
@@ -85,17 +85,18 @@ const updateFilme = async function (novosDados) {
         let sql
 
         if (novosDados.data_relancamento != '' && novosDados.data_relancamento != null && novosDados.data_relancamento != undefined) {
-            console.log(novosDados.nome)
             sql = `update tbl_filme
                set
 
-               nome = '${novosDados.nome}',
+               titulo = '${novosDados.titulo}',
                sinopse = '${novosDados.sinopse}',
                duracao = '${novosDados.duracao}',
                data_lancamento = '${novosDados.data_lancamento}',
                data_relancamento = '${novosDados.data_relancamento}',
                foto_capa = '${novosDados.foto_capa}',
                valor_unitario = ${novosDados.valor_unitario},
+               id_favorito = ${novosDados.id_favorito},
+               id_classificacao = ${novosDados.id_classificacao}
                
                where id = ${novosDados.id}
                `
@@ -103,12 +104,14 @@ const updateFilme = async function (novosDados) {
             sql = `update tbl_filme
                set
 
-               nome = '${novosDados.nome}',
+               titulo = '${novosDados.titulo}',
                sinopse = '${novosDados.sinopse}',
                duracao = '${novosDados.duracao}',
                data_lancamento = '${novosDados.data_lancamento}',
                foto_capa = '${novosDados.foto_capa}',
-               valor_unitario = ${novosDados.valor_unitario}
+               valor_unitario = ${novosDados.valor_unitario},
+               id_favorito = ${novosDados.id_favorito},
+               id_classificacao = ${novosDados.id_classificacao}
                
                where id = ${novosDados.id}
                `
@@ -210,6 +213,8 @@ const selectByNomeFilme = async function (nome) {
 
     }
 }
+
+//Função para verificar se o filme é favorito
 const selectFavorito = async function(id){
     try {
         let sql = `select * from tbl_favorito where favorito = ${id}`
