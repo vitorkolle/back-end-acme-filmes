@@ -253,6 +253,28 @@ app.get('/v2/acmeFilmes/atores', cors(), async function(request, response){
     response.json(resultDadosAtores)
 })
 
+//endpoint que busca um ator filtrando pelo id
+app.get('/v2/acmeFilmes/ator/:id', cors(), async function(request, response){
+    let idAtor = request.params.id
+
+    let resultDadosAtor = await controllerAtores.getAtor(idAtor)
+
+    response.status(resultDadosAtor.status_code)
+    response.json(resultDadosAtor)
+})
+
+//endpoint que cadastra um ator no banco de dados
+app.post('/v2/acmeFilmes/ator', cors(), bodyParserJSON, async function(request, response){
+    const contentType = request.header('content-type')
+
+    const dadosAtor = request.body
+
+    let resultDadosAtor = await controllerAtores.setInserirAtor(dadosAtor, contentType)
+
+    response.status(resultDadosAtor.status_code)
+    response.json(resultDadosAtor)
+})
+
 
 
 //Configuração para que a API use a porta 8080

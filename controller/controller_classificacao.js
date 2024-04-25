@@ -55,7 +55,6 @@ const getBuscarClassificacao = async function (id) {
                 classificacaoJSON.classificacao = dadosClassificacao
                 classificacaoJSON.status_code = 200
 
-
                 return classificacaoJSON
             } else {
                 return message.ERROR_NOT_FOUND //400
