@@ -4,19 +4,19 @@
  * Data: 25/04
  * Versão: 1.0 
  *********************************************************************************************************************/
-const {PrismaClient} = require('@prisma/client')
+const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
 
-const selectALlAtores = async function(){
+const selectALlAtores = async function () {
     try {
         let sql = 'select * from tbl_ator'
 
         let rsAtor = await prisma.$queryRawUnsafe(sql)
 
-        if(rsAtor){
+        if (rsAtor) {
             return rsAtor
-        }else{
+        } else {
             return false
         }
     } catch (error) {
@@ -24,15 +24,15 @@ const selectALlAtores = async function(){
     }
 }
 
-const selectBuscarAtor = async function(id){
+const selectBuscarAtor = async function (id) {
     try {
         let sql = `select * from tbl_ator where id = ${id}`
 
         let rsAtor = await prisma.$queryRawUnsafe(sql)
 
-        if(rsAtor){
+        if (rsAtor) {
             return rsAtor
-        }else{
+        } else {
             return false
         }
     } catch (error) {
@@ -40,15 +40,15 @@ const selectBuscarAtor = async function(id){
     }
 }
 
-const selectSexo = async function(id){
+const selectSexo = async function (id) {
     try {
         let sql = `select * from tbl_sexoA where id = ${id}`
 
         let rsSexo = await prisma.$queryRawUnsafe(sql)
 
-        if(rsSexo){
+        if (rsSexo) {
             return rsSexo
-        }else{
+        } else {
             return false
         }
     } catch (error) {
@@ -56,7 +56,7 @@ const selectSexo = async function(id){
     }
 }
 
-const insertAtor = async function(dadosAtor){
+const insertAtor = async function (dadosAtor) {
     try {
         let sql = ` insert into tbl_ator(
                 nome,
@@ -69,27 +69,43 @@ const insertAtor = async function(dadosAtor){
                 '${dadosAtor.biografia}',
                 ${dadosAtor.id_sexoA}
             )`
-            let rsAtor = await prisma.$executeRawUnsafe(sql)
+        let rsAtor = await prisma.$executeRawUnsafe(sql)
 
-            if(rsAtor){
-                return true
-            }else{
-                return false
-            }
+        if (rsAtor) {
+            return true
+        } else {
+            return false
+        }
     } catch (error) {
-        return false   
+        return false
     }
 }
 
-const selectLastIdAtor = async function(){
+const selectLastIdAtor = async function () {
     try {
         let sql = 'select cast(last_insert_id() as decimal) as id from tbl_classificacao limit 1'
 
         let resultId = await prisma.$queryRawUnsafe(sql)
 
-        if(resultId){
+        if (resultId) {
             return resultId
-        }else{
+        } else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
+const deleteAtor = async function (id) {
+    try {
+        let sql = `delete from tbl_ator where id = ${id}`
+
+        let rsAtor = await prisma.$queryRawUnsafe(sql)
+
+        if (rsAtor) {
+            return rsAtor
+        } else {
             return false
         }
     } catch (error) {
@@ -102,5 +118,6 @@ module.exports = {
     selectSexo,
     selectBuscarAtor,
     insertAtor,
-    selectLastIdAtor
+    selectLastIdAtor,
+    deleteAtor
 }

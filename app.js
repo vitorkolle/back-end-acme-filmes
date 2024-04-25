@@ -275,6 +275,15 @@ app.post('/v2/acmeFilmes/ator', cors(), bodyParserJSON, async function(request, 
     response.json(resultDadosAtor)
 })
 
+app.delete('/v2/acmeFilmes/ator/:id', cors(), async function(request, response){
+    let idAtor = request.params.id
+
+    let resultDadosAtor = await controllerAtores.setDeletarAtor(idAtor)
+
+    response.status(resultDadosAtor.status_code)
+    response.json(resultDadosAtor.message)
+})
+
 
 
 //Configuração para que a API use a porta 8080
