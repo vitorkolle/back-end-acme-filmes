@@ -113,11 +113,37 @@ const deleteAtor = async function (id) {
     }
 }
 
+const updateAtor = async function(dadosAtor){
+    try {
+        let sql = 
+        
+        ` update tbl_ator
+                      set
+                      nome = '${dadosAtor.nome}',
+                      foto_ator = '${dadosAtor.foto_ator}',
+                      biografia = '${dadosAtor.biografia}',
+                      id_sexoA = ${dadosAtor.id_sexoA}
+
+                      where id = ${dadosAtor.id}
+        `
+        let rsAtor = prisma.$executeRawUnsafe(sql)
+
+        if(rsAtor){
+            return rsAtor
+        }else{
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
+}
 module.exports = {
     selectALlAtores,
     selectSexo,
     selectBuscarAtor,
     insertAtor,
     selectLastIdAtor,
-    deleteAtor
+    deleteAtor,
+    updateAtor
 }

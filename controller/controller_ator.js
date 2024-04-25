@@ -130,9 +130,55 @@ const setDeletarAtor = async function (id) {
         return message.ERROR_NOT_FOUND //404
     }
 }
+
+const setupdateAtor = async function(id, dadosAtor, contentType){
+    try {
+        if(String(contentType).toLowerCase() == 'application/json'){
+            let idLocal = id
+
+            const validarId = await atorDAO.selectBuscarAtor(idLocal)
+            if(validarId.length > 0){
+                let atorAtualizadoJSON = {}
+
+                if(
+                    dadosAtor.nome == ''      || dadosAtor.nome == null      || dadosAtor.nome == undefined      || dadosAtor.nome.length > 80      ||
+                    dadosAtor.foto_ator == '' || dadosAtor.foto_ator == null || dadosAtor.foto_ator == undefined || dadosAtor.foto_ator.length > 80 ||
+                    dadosAtor.biografia == '' || dadosAtor.biografia == null || dadosAtor.biografia == undefined ||
+                    dadosAtor.id_sexoA == ''  || dadosAtor.id_sexoA == null  || isNaN(dadosAtor.id_sexoA)
+                 ){
+                    return message.ERROR_REQUIRED_FIELDS //400
+                 }
+                 else{
+                    dadosAtor.id = idLocal
+                    let atualizarAtor = await atorDAO.updateAtor(dadosAtor)
+                    let sexoAtor = await atorDAO.selectSexo(dadosAtor.id_sexoA)
+
+                    if(atualizarAtor){
+                        atorAtualizadoJSON.ator = dadosAtor
+                        atorAtualizadoJSON.sexo = sexoAtor[0].sexo
+                        atorAtualizadoJSON.status = message.SUCCESS_UPDATED_ITEM
+                        atorAtualizadoJSON.status_code = message.SUCCESS_UPDATED_ITEM.status_code
+                        atorAtualizadoJSON.message = message.SUCCESS_UPDATED_ITEM.message
+
+                        return atorAtualizadoJSON
+                    }else{
+                        return message.ERROR_INTERNAL_SERVER_DB //500
+                    }
+                 }
+            }else{
+                return message.ERROR_NOT_FOUND //404
+            }
+        }else{
+            return message.ERROR_CONTENT_TYPE //415
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER //500
+    }
+}
 module.exports = {
     getAllAtores,
     getAtor,
     setInserirAtor,
-    setDeletarAtor
+    setDeletarAtor,
+    setupdateAtor    
 }

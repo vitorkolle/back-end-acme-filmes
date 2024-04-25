@@ -275,6 +275,7 @@ app.post('/v2/acmeFilmes/ator', cors(), bodyParserJSON, async function(request, 
     response.json(resultDadosAtor)
 })
 
+//endpoint que deleta um ator do banco de dados
 app.delete('/v2/acmeFilmes/ator/:id', cors(), async function(request, response){
     let idAtor = request.params.id
 
@@ -282,6 +283,19 @@ app.delete('/v2/acmeFilmes/ator/:id', cors(), async function(request, response){
 
     response.status(resultDadosAtor.status_code)
     response.json(resultDadosAtor.message)
+})
+
+//endpoint que atualiza um filme do banco de dados
+app.put('/v2/acmeFilmes/ator/:id', cors(), bodyParserJSON, async function(request, response){
+    let idAtor = request.params.id
+    const novosDados = request.body
+    const contentType = request.header('content-type')
+
+    let resultDadosAtor = await controllerAtores.setupdateAtor(idAtor, novosDados, contentType)
+
+    response.status(resultDadosAtor.status_code)
+    response.json(resultDadosAtor)
+
 })
 
 

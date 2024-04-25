@@ -179,6 +179,8 @@ const setAtualizarCLassificacao = async function(id, dadosClassificacao, content
         }else{
             return message.ERROR_NOT_FOUND //404
         }
+        }else{
+            return message.ERROR_CONTENT_TYPE //415
         }
     } catch (error) {
         return message.ERROR_INTERNAL_SERVER //500 controller
