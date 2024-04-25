@@ -31,7 +31,8 @@ const controleFilmes = require ('./controller/funcoes.js')
 const controllerFilmes = require('./controller/controller_filme.js')
 const controllerClassificacao = require('./controller/controller_classificacao.js')
 const controllerGenero = require('./controller/controller_genero.js')
-const { warnEnvConflicts } = require('@prisma/client/runtime/library')
+const controllerAtores = require('./controller/controller_ator.js')
+
 
 //Criação do App
 const app = express() 
@@ -189,6 +190,7 @@ app.put('/v2/acmeFilmes/classificacao/:id', cors(), bodyParserJSON, async functi
 
 
 /***********************************Endpoints de Gênero************************************************************/
+
 //endpoint que retorna todos os gêneros do banco de dados
 app.get('/v2/acmeFilmes/generos', cors(), async function(request, response){
     //requisição do app para retornar todos os gêneros
@@ -242,6 +244,14 @@ app.put('/v2/acmeFilmes/genero/:id', cors(), bodyParserJSON, async function(requ
     response.json(resultDadosGenero)
 })
 
+/****************************************Endpoints de Atores*********************************************/
+//endpoint que retorna todos os atores
+app.get('/v2/acmeFilmes/atores', cors(), async function(request, response){
+    let resultDadosAtores = await controllerAtores.getAllAtores()
+
+    response.status(resultDadosAtores.status_code)
+    response.json(resultDadosAtores)
+})
 
 
 

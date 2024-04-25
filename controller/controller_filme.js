@@ -196,8 +196,6 @@ const getListarFilmes = async function () {
             filmesJSON.quantidade = dadosFilmes.length
             filmesJSON.status_code = 200
 
-            console.log(filmesJSON)
-
             return filmesJSON
         } else {
             return message.ERROR_NOT_FOUND //404
