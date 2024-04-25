@@ -10,7 +10,7 @@
  *        -PRISMA ORM   (A BIBLIOTECA MAIS ATUAL - UTILIZADA NESSE PROJETO)
  *        -FASTFY ORM   (A BIBLIOTECA MAIS ATUAL)
  * 
- * 
+ *  
  *      Para a instalação do Prisma ORM
  *      npm install prisma --save   (É responsávem pela conexão como o DB)
  *      npm install @prisma/client --save   (É responsavel por executar scripts SQL mo DB)

@@ -4,7 +4,7 @@
  * Autor: Vitor Paes Kolle
  * Versão: 1.0 
  ***********************************************************************************************************/
-
+ 
 //Import da biblioteca do prisma client
 const { PrismaClient } = require('@prisma/client');
 
@@ -19,13 +19,15 @@ const insertFilme = async function (dadosFilme) {
 
         if (dadosFilme.data_relancamento != '' && dadosFilme.data_relancamento != null && dadosFilme.data_relancamento != undefined) {
             sql = `insert into tbl_filme( 
-            nome,
+            titulo,
             sinopse,
             duracao,
             data_lancamento,
             data_relancamento,
             foto_capa,
-            valor_unitario
+            valor_unitario,
+            id_favorito,
+            id_classificacao
    )values(
             '${dadosFilme.nome}',
             '${dadosFilme.sinopse}',
@@ -33,17 +35,21 @@ const insertFilme = async function (dadosFilme) {
             '${dadosFilme.data_lancamento}',
             '${dadosFilme.data_relancamento}',
             '${dadosFilme.foto_capa}',
-            '${dadosFilme.valor_unitario}'
+            '${dadosFilme.valor_unitario}',
+            '${dadosFilme.id_favorito}',
+            '${dadosFilme.id_classificacao}'
 )`
         } else {
             sql = `insert into tbl_filme( 
-        nome,
+        titulo,
         sinopse,
         duracao,
         data_lancamento,
         data_relancamento,
         foto_capa,
-        valor_unitario
+        valor_unitario,
+        id_favorito,
+        id_classificacao
 )values(
         '${dadosFilme.nome}',
         '${dadosFilme.sinopse}',
@@ -51,7 +57,9 @@ const insertFilme = async function (dadosFilme) {
         '${dadosFilme.data_lancamento}',
          null,
         '${dadosFilme.foto_capa}',
-        '${dadosFilme.valor_unitario}'
+        '${dadosFilme.valor_unitario}',
+        '${dadosFilme.id_favorito}',
+        '${dadosFilme.id_classificacao}'
 )`
         }
         //executeRawUnsafe() = serve para executar scripts sem retorno de dados
@@ -202,7 +210,21 @@ const selectByNomeFilme = async function (nome) {
 
     }
 }
+const selectFavorito = async function(id){
+    try {
+        let sql = `select * from tbl_favorito where favorito = ${id}`
 
+        let rsFavorito = await prisma.$queryRawUnsafe(sql)
+
+        if(rsFavorito){
+            return rsFavorito
+        }else{
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}  
 //Exportação das funções 
 module.exports = {
     insertFilme,
@@ -211,6 +233,7 @@ module.exports = {
     selectAllFilmes,
     selectByIdFilme,
     selectByNomeFilme,
-    selectIdLastFilme
+    selectIdLastFilme,
+    selectFavorito
 }
 

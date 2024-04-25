@@ -9,6 +9,7 @@ const message = require('../modulo/config.js')
 
 //Import do arquivo responsavel pela interação com o BD
 const filmesDAO = require('../model/DAO/filme.js')
+const classificacaoDAO = require('../model/DAO/classificacao.js')
 
 //Função para validar e inserir um novo filme
 const setInserirNovoFilme = async function (dadosFilme, contentType) {
@@ -18,12 +19,14 @@ const setInserirNovoFilme = async function (dadosFilme, contentType) {
             //Cria o objeto JSON para devolver os dados criados na requisição
             let novoFilmeJSON = {}
             //Validação de campos obrigatórios ou com digitação inválida                            
-            if (dadosFilme.nome == '' || dadosFilme.nome == undefined || dadosFilme.nome == null || dadosFilme.nome.length > 80 ||
-                dadosFilme.sinopse == '' || dadosFilme.sinopse == undefined || dadosFilme.sinopse == null || dadosFilme.sinopse.length > 65000 ||
-                dadosFilme.duracao == '' || dadosFilme.duracao == undefined || dadosFilme.duracao == null || dadosFilme.duracao.length > 8 ||
-                dadosFilme.data_lancamento == '' || dadosFilme.data_lancamento == undefined || dadosFilme.data_lancamento == null || dadosFilme.data_lancamento.length != 10 ||
-                dadosFilme.foto_capa == '' || dadosFilme.foto_capa == undefined || dadosFilme.foto_capa == null || dadosFilme.foto_capa.length > 200 ||
-                dadosFilme.valor_unitario.length > 6
+            if (dadosFilme.nome == ''                || dadosFilme.nome == undefined             || dadosFilme.nome == null             || dadosFilme.nome.length > 80             ||
+                dadosFilme.sinopse == ''             || dadosFilme.sinopse == undefined          || dadosFilme.sinopse == null          || dadosFilme.sinopse.length > 65000       ||
+                dadosFilme.duracao == ''             || dadosFilme.duracao == undefined          || dadosFilme.duracao == null          || dadosFilme.duracao.length > 8           ||
+                dadosFilme.data_lancamento == ''     || dadosFilme.data_lancamento == undefined  || dadosFilme.data_lancamento == null  || dadosFilme.data_lancamento.length != 10 ||
+                dadosFilme.foto_capa == ''           || dadosFilme.foto_capa == undefined        || dadosFilme.foto_capa == null        || dadosFilme.foto_capa.length > 200       ||
+                dadosFilme.valor_unitario.length > 6 ||
+                dadosFilme.id_favorito == ''         || dadosFilme.id_favorito == undefined      || dadosFilme.id_favorito == null      || isNaN(dadosFilme.id_favorito)           || 
+                dadosFilme.id_classificacao == ''    || dadosFilme.id_classificacao == undefined || dadosFilme.id_classificacao == null || isNaN(dadosFilme.id_classificacao)           
             ) {
                 return message.ERROR_REQUIRED_FIELDS //400
 
@@ -47,11 +50,16 @@ const setInserirNovoFilme = async function (dadosFilme, contentType) {
                     //encaminha os dados do filme para o DAO inserir no Banco de Dados
                     let novoFilme = await filmesDAO.insertFilme(dadosFilme)
                     let filmeId = await filmesDAO.selectIdLastFilme()
+                    let favorito = await filmesDAO.selectFavorito(dadosFilme.id_favorito)
+                    let classificacao = await classificacaoDAO.selectByIdClassificacao(dadosFilme.id_classificacao)
+                    console.log(classificacao)
 
                     //validação para verificar se o DAO inseriu os dados do Banco de Dados
-                    if (novoFilme && filmeId) {
+                    if (novoFilme && filmeId && favorito && classificacao) {
                         //Cria o JSON do retorno dos Dados (201)
                         novoFilmeJSON.filme = dadosFilme
+                        novoFilmeJSON.favorito = Number(favorito[0].favorito)
+                        novoFilmeJSON.classificacao = classificacao[0]
                         novoFilmeJSON.filme.id = Number(filmeId[0].id)
                         novoFilmeJSON.status = message.SUCCESS_CREATED_ITEM
                         novoFilmeJSON.status_code = message.SUCCESS_CREATED_ITEM.status_code
@@ -173,9 +181,17 @@ const getListarFilmes = async function () {
 
     if (dadosFilmes) {
         if (dadosFilmes.length > 0) {
+            if(dadosFilmes.favorito == 1){
+                filmesJSON.filmes.favorito = true
+            }
+            else if (dadosFilmes.favorito == 0){
+                filmesJSON.filmes.favorito = false
+            }
             filmesJSON.filmes = dadosFilmes
             filmesJSON.quantidade = dadosFilmes.length
             filmesJSON.status_code = 200
+
+            console.log(filmesJSON)
 
             return filmesJSON
         } else {
