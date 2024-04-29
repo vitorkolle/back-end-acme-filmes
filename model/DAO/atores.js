@@ -138,6 +138,30 @@ const updateAtor = async function(dadosAtor){
         return false
     }
 }
+
+const selectNacionalidadeAtor = async function(idAtor){
+    try {
+        let sql = `select * from tbl_nacionalidadeAator where id_ator = ${idAtor}`
+
+        let rsNacionalidade = await prisma.$queryRawUnsafe(sql)
+
+        if(rsNacionalidade){
+            let sqlNacionalidade = `select * from tbl_nacionalidadeA where id = ${rsNacionalidade[0].id_nacionalidadeA}`
+
+            let rsFinal = await prisma.$queryRawUnsafe(sqlNacionalidade)
+
+            if(rsFinal){
+                return rsFinal
+            }else{
+                return false
+            }
+        }else{
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
 module.exports = {
     selectALlAtores,
     selectSexo,
@@ -145,5 +169,6 @@ module.exports = {
     insertAtor,
     selectLastIdAtor,
     deleteAtor,
-    updateAtor
+    updateAtor,
+    selectNacionalidadeAtor
 }

@@ -18,9 +18,14 @@ const getAllAtores = async function () {
         if (dadosAtores.length > 0) {
             for (let index = 0; index < dadosAtores.length; index++) {
                 const element = dadosAtores[index]
+
                 let sexoAtor = await atorDAO.selectSexo(element.id_sexoA)
                 delete element.id_sexoA
                 element.sexo = sexoAtor[0].sexo
+
+                let nacionalidadeAtor = await atorDAO.selectNacionalidadeAtor(element.id)
+                delete element.id_nacionalidadeA
+                element.nacionalidade = nacionalidadeAtor[0].pais
             }
 
             atoresJSON.atores = dadosAtores
@@ -75,7 +80,7 @@ const setInserirAtor = async function (dadosAtor, contentType) {
     try {
         if (String(contentType).toLowerCase() == 'application/json') {
 
-            let novoAtorJSON = {}
+            let novoAtorJSON = {} 
 
             if (
                 dadosAtor.nome == '' || dadosAtor.nome == null || dadosAtor.nome == undefined || dadosAtor.nome.length > 80 ||

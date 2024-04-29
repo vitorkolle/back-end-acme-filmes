@@ -2,6 +2,7 @@ create database dtb_acme_filmes;
 
 use dtb_acme_filmes;
 
+##FAVORITO 
 create table tbl_favorito(
 id integer primary key not null auto_increment,
 favorito boolean not null
@@ -12,23 +13,16 @@ insert into tbl_favorito(favorito) values
 
 select * from tbl_favorito;
 
-
+##CLASSIFICAÇÃO
 create table tbl_classificacao(
 id integer primary key not null auto_increment,
 faixa_etaria varchar(5) not null,
 classificacao varchar(7) not null,
 caracteristicas text not null
 );
-insert into tbl_classificacao(faixa_etaria, classificacao, caracteristicas)values
-(
-'0-10', 
-'10 anos', 
-'Violência: Angústia; Arma com violência; Ato criminoso sem violência; Linguagem depreciativa; Medo ou tensão; Ossada ou esqueleto com resquício de ato de violência
-Sexo e Nudez: Conteúdo educativo sobre sexo.
-Drogas: Descrição do consumo de droga lícita; Discussão sobre o tema tráfico de drogas; Uso medicinal de droga ilícita.' 
-);
 alter table tbl_classificacao
 add column foto_classificacao varchar(300) not null;
+
 insert into tbl_classificacao(
             faixa_etaria,
             classificacao,
@@ -44,6 +38,7 @@ select * from tbl_classificacao;
 delete from tbl_classificacao where id = '3';
 select * from tbl_classificacao where id = 4;
 
+##GÊNERO
 create table tbl_genero(
 id integer not null primary key auto_increment,
 nome varchar(70) not null,
@@ -62,6 +57,7 @@ update tbl_genero
             descricao_genero = "sjkgbrjgb"
             where id = 1;
 
+##GÊNERO - FILME
 create table tbl_genero_filme(
 id integer not null primary key auto_increment,
 id_genero integer not null,
@@ -73,7 +69,7 @@ foreign key (id_filme) references tbl_filme(id)
 );
 
 
-
+##FILME
 create table tbl_filme(
 id integer primary key not null auto_increment,
 titulo varchar(80) not null,
@@ -110,23 +106,28 @@ insert into tbl_filme(
          null,
         'https://br.web.img3.acsta.net/c_310_420/pictures/17/12/07/16/09/2291532.jpg',
         '34.99',
-        '1',
-        '8'
+        1,
+        1
 );
 
-
+##SEXO ATOR
 create table tbl_sexoA(
 id integer not null primary key auto_increment,
 sexo varchar(15)
 );
 insert into tbl_sexoA(sexo) values ('homem'), ('mulher');
+
 select * from tbl_sexoA;
 
+##NACIONALIDADE(ATOR)
 create table tbl_nacionalidadeA(
 id integer not null primary key auto_increment,
 pais varchar(60) not null
 );
+insert into tbl_nacionalidadeA(pais)values
+('Estados Unidos'), ('Brasil'), ('Inglaterra'), ('França'), ('Irlanda'), ('Espanha'), ('Argentina');
 
+##NACIONALIDADE - ATOR
 create table tbl_nacionalidadeAator(
 id integer not null primary key auto_increment,
 id_nacionalidadeA integer not null,
@@ -137,6 +138,7 @@ constraint FK_ATOR_NACIONALIDADEAATOR
 foreign key (id_ator) references tbl_ator(id)
 );
 
+##ATOR
 create table tbl_ator(
 id integer not null primary key auto_increment,
 nome varchar(80) not null,
@@ -146,6 +148,7 @@ id_sexoA integer not null,
 constraint FK_SEXOA_ATOR
 foreign key (id_sexoA) references tbl_sexoA(id)
 );
+
 insert into tbl_ator(nome, foto_ator, biografia, id_sexoA) values 
 (
 'Adam Sandlerr',
@@ -163,6 +166,7 @@ apresentações de stand-up no Boston Comedy Club. Após se formar no curso de B
                       
                       where id = 12;
 
+##ATOR - FILME
 create table tbl_ator_filme(
 id integer not null primary key auto_increment,
 id_ator integer not null,
@@ -173,16 +177,22 @@ constraint FK_FILME_ATORFILME
 foreign key (id_filme) references tbl_filme(id)
 );
 
+##SEXO(DIRETOR)
 create table tbl_sexoD(
 id integer not null primary key auto_increment,
 sexo varchar(15) not null
 );
+insert into tbl_sexoD(sexo) values ('homem'), ('mulher');
 
+##NACIONALIDADE(DIRETOR)
 create table tbl_nacionalidadeD(
 id integer not null primary key auto_increment,
 pais varchar(60) not null
 );
+insert into tbl_nacionalidadeD(pais)values
+('Estados Unidos'), ('Brasil'), ('Inglaterra'), ('França'), ('Irlanda'), ('Espanha'), ('Argentina');
 
+##NACIONALIDADE - DIRETOR
 create table tbl_nacionalidadeD_diretor(
 id integer not null primary key auto_increment,
 id_nacionalidadeD integer not null,
@@ -190,6 +200,8 @@ foreign key(id_nacionalidadeD) references tbl_nacionalidadeD(id),
 id_diretor integer not null,
 foreign key(id_diretor) references tbl_diretor(id)
 );
+
+##DIRETOR
 create table tbl_diretor(
 id integer not null primary key auto_increment,
 nome varchar(80) not null,
@@ -204,6 +216,7 @@ foreign key(id_sexoD) references tbl_sexoD(id)
 alter table tbl_diretor
 drop column id_nacionalidade;
 
+##DIRETOR - ATOR
 create table tbl_diretor_ator(
 id integer not null primary key auto_increment,
 id_diretor integer not null,
@@ -214,51 +227,6 @@ constraint FK_ATOR_DIRETORATOR
 foreign key(id_ator) references tbl_ator(id)
 );
 
-select * from tbl_filme;
-INSERT INTO tbl_filme (titulo, sinopse, duracao, data_lancamento, foto_capa, valor_unitario, id_favorito, id_classificacao) VALUES 
-(
-'Interestelar',
-'Após ver a Terra consumindo boa parte de suas reservas naturais, um grupo de astronautas recebe a missão de verificar
- possíveis planetas para receberem a população mundial, possibilitando a continuação da espécie. Cooper (Matthew McConaughey) 
- é chamado para liderar o grupo e aceita a missão sabendo que pode nunca mais ver os filhos. Ao lado de Brand (Anne Hathaway), 
- Jenkins (Marlon Sanders) e Doyle (Wes Bentley), ele seguirá em busca de uma nova casa. Com o passar dos anos, sua filha Murph 
- (Mackenzie Foy e Jessica Chastain) investirá numa própria jornada para também tentar salvar a população do planeta.',
- '02:49',
- '2014-11-06',
- 'https://br.web.img3.acsta.net/c_310_420/pictures/14/10/31/20/39/476171.jpg',
- 29.99,
- 2,
- 8
-),
-(
-'Vingadores: Ultimato', 
-'Em Vingadores: Ultimato, após Thanos eliminar metade das criaturas vivas em Vingadores: Guerra Infinita, 
-os heróis precisam lidar com a dor da perda de amigos e seus entes queridos. Com Tony Stark (Robert Downey Jr.) 
-vagando perdido no espaço sem água nem comida, o Capitão América/Steve Rogers (Chris Evans) e a Viúva Negra/Natasha Romanov 
-(Scarlett Johansson) precisam liderar a resistência contra o titã louco.',
-'03:01',
-'2019-04-25',
-'https://br.web.img2.acsta.net/c_310_420/pictures/19/04/26/17/30/2428965.jpg',
-29.99,
-'1',
-8
-);
-
 show tables;
 
-select * from tbl_filme;
-
 select cast(last_insert_id() as decimal) as id from tbl_filme limit 1;
-
-delete from tbl_filme where id = 20;
-
-update tbl_filme
-               set
-               nome = "teste 05",
-               sinopse = "Uma aventura sci-fi que leva os espectadores a uma jornada através das eras.",
-               duracao = '02:00',
-               data_lancamento = '2024-01-07',
-               foto_capa = "https://exemplo.com/foto_tempo.jpg",
-               valor_unitario = '34.99'
-
-               where id = 25;

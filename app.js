@@ -298,6 +298,9 @@ app.put('/v2/acmeFilmes/ator/:id', cors(), bodyParserJSON, async function(reques
 
 })
 
+/****************************************Endpoints de Diretores*********************************************/ 
+
+
 
 
 //Configuração para que a API use a porta 8080
