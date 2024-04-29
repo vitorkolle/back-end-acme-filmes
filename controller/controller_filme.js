@@ -186,11 +186,11 @@ const getListarFilmes = async function () {
 
     if (dadosFilmes) {
         if (dadosFilmes.length > 0) {
-            if(dadosFilmes.favorito == 1){
-                filmesJSON.filmes.favorito = true
-            }
-            else if (dadosFilmes.favorito == 0){
-                filmesJSON.filmes.favorito = false
+            for (let index = 0; index < dadosFilmes.length; index++) {
+                const element = dadosFilmes[index]
+
+                let classificacao = await classificacaoDAO.selectByIdClassificacao(element.id_classificacao)
+                element.classificacao = classificacao[0].classificacao
             }
             filmesJSON.filmes = dadosFilmes
             filmesJSON.quantidade = dadosFilmes.length
@@ -216,15 +216,17 @@ const getBuscarFilme = async function (id) {
     if (idFilme == '' || idFilme == undefined || isNaN(idFilme)) {
         return message.ERROR_INVALID_ID //400    
     } else {
-        //Encaminha o ID para o DAO buscar no banco de dados
-        let novosDados = await filmesDAO.selectByIdFilme(idFilme)
+        //Encaminha o ID para a DAO buscar no banco de dados
+        let dadosFilme = await filmesDAO.selectByIdFilme(idFilme)
+        let classificacao = await classificacaoDAO.selectByIdClassificacao(dadosFilme[0].id_classificacao)
 
         //Verifica se o DAO retornou dados
-        if (novosDados) {
+        if (dadosFilme) {
             //Validação para verificar a quantidade de itens retornados
-            if (novosDados.length > 0) {
+            if (dadosFilme.length > 0) {
                 //Cria o JSON para retorno
-                filmesJSON.file = novosDados;
+                filmesJSON.file = dadosFilme;
+                filmesJSON.classificacao = classificacao[0].classificacao
                 filmesJSON.status_code = 200;
 
                 return filmesJSON

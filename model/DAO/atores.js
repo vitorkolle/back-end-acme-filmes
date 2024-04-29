@@ -7,6 +7,7 @@
 const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
+const filmesDao = require('./filme.js')
 
 const selectALlAtores = async function () {
     try {
@@ -162,6 +163,29 @@ const selectNacionalidadeAtor = async function(idAtor){
         return false
     }
 }
+
+const selectFilmesAtor = async function(idAtor){
+    try {
+        let sql = `select * from tbl_ator_filme where id_ator = ${idAtor}`
+
+        let rsFilmeA = await prisma.$queryRawUnsafe(sql)
+
+        if(rsFilmeA){
+            let rsFilme = await filmesDao.selectByIdFilme(Number(rsFilmeA[0].id_filme))
+
+            if(rsFilme){
+                return rsFilme
+            }else{
+                return false
+            }
+
+        }else{
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
 module.exports = {
     selectALlAtores,
     selectSexo,
@@ -170,5 +194,6 @@ module.exports = {
     selectLastIdAtor,
     deleteAtor,
     updateAtor,
-    selectNacionalidadeAtor
+    selectNacionalidadeAtor,
+    selectFilmesAtor
 }
