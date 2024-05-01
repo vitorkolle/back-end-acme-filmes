@@ -119,7 +119,7 @@ const setAtualizarFilme = async function (id, novosDados, contentType) {
                     }
 
                     if (validateStatus) {
-                        novosDados.id = id
+                        novosDados.id = Number(id)
                         let filmeAtualizado = await filmesDAO.updateFilme(novosDados)
                         let favorito = await filmesDAO.selectFavorito(novosDados.id_favorito)
                         let classificacao = await classificacaoDAO.selectByIdClassificacao(novosDados.id_classificacao)
