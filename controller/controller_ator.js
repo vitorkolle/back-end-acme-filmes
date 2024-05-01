@@ -15,7 +15,7 @@ const getAllAtores = async function () {
     let dadosAtores = await atorDAO.selectALlAtores()
 
     if (dadosAtores) {
-        if (dadosAtores.length > 0) {
+        if (dadosAtores.length > 0) { 
             for (let index = 0; index < dadosAtores.length; index++) {
                 const element = dadosAtores[index]
 
@@ -27,7 +27,7 @@ const getAllAtores = async function () {
                 element.nacionalidade = nacionalidadeAtor[0].pais
 
                 let filmesAtor = await atorDAO.selectFilmesAtor(element.id)
-                element.filmesAtor = filmesAtor.titulo
+                element.filmesAtor = filmesAtor
             }
 
             atoresJSON.atores = dadosAtores
@@ -59,7 +59,6 @@ const getAtor = async function (id) {
             const element = resultDadosAtor[index]
 
             let sexoAtor = await atorDAO.selectSexo(element.id_sexoA)
-            delete element.id_sexoA
             element.sexo = sexoAtor[0].sexo
 
             let filmesAtor = await atorDAO.selectFilmesAtor(element.id)

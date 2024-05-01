@@ -7,7 +7,9 @@
 const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
-const filmesDao = require('./filme.js')
+
+
+const filmesDAO = require('../DAO/filme.js')
 
 const selectALlAtores = async function () {
     try {
@@ -114,11 +116,11 @@ const deleteAtor = async function (id) {
     }
 }
 
-const updateAtor = async function(dadosAtor){
+const updateAtor = async function (dadosAtor) {
     try {
-        let sql = 
-        
-        ` update tbl_ator
+        let sql =
+
+            ` update tbl_ator
                       set
                       nome = '${dadosAtor.nome}',
                       foto_ator = '${dadosAtor.foto_ator}',
@@ -129,9 +131,9 @@ const updateAtor = async function(dadosAtor){
         `
         let rsAtor = prisma.$executeRawUnsafe(sql)
 
-        if(rsAtor){
+        if (rsAtor) {
             return rsAtor
-        }else{
+        } else {
             return false
         }
 
@@ -140,23 +142,23 @@ const updateAtor = async function(dadosAtor){
     }
 }
 
-const selectNacionalidadeAtor = async function(idAtor){
+const selectNacionalidadeAtor = async function (idAtor) {
     try {
         let sql = `select * from tbl_nacionalidadeAator where id_ator = ${idAtor}`
 
         let rsNacionalidade = await prisma.$queryRawUnsafe(sql)
 
-        if(rsNacionalidade){
+        if (rsNacionalidade) {
             let sqlNacionalidade = `select * from tbl_nacionalidadeA where id = ${rsNacionalidade[0].id_nacionalidadeA}`
 
             let rsFinal = await prisma.$queryRawUnsafe(sqlNacionalidade)
 
-            if(rsFinal){
+            if (rsFinal) {
                 return rsFinal
-            }else{
+            } else {
                 return false
             }
-        }else{
+        } else {
             return false
         }
     } catch (error) {
@@ -164,22 +166,28 @@ const selectNacionalidadeAtor = async function(idAtor){
     }
 }
 
-const selectFilmesAtor = async function(idAtor){
+const selectFilmesAtor = async function (idAtor) {
     try {
         let sql = `select * from tbl_ator_filme where id_ator = ${idAtor}`
 
         let rsFilmeA = await prisma.$queryRawUnsafe(sql)
 
-        if(rsFilmeA){
-            let rsFilme = await filmesDao.selectByIdFilme(Number(rsFilmeA[0].id_filme))
+        if (rsFilmeA) {
+            for (let index = 0; index < rsFilmeA.length; index++) {
+                const element = rsFilmeA[index]
 
-            if(rsFilme){
-                return rsFilme
-            }else{
-                return false
+                let sqlFilme = `select * from tbl_filme where id = ${element.id_filme}`
+
+                let rsFilme = await prisma.$queryRawUnsafe(sqlFilme)
+
+                if (rsFilme) {
+                    return rsFilme
+                } else {
+                    return false
+                }
             }
 
-        }else{
+        } else {
             return false
         }
     } catch (error) {

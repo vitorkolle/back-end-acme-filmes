@@ -12,7 +12,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient()
 
 
-const atoresDAO = require('../DAO/atores')
+const atoresDAO = require('../DAO/atores.js')
 
 //Função para inserir um filme no banco de dados
 const insertFilme = async function (dadosFilme) {
