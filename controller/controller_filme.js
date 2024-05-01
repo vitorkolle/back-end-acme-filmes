@@ -18,16 +18,18 @@ const setInserirNovoFilme = async function (novosDados, contentType) {
         if (String(contentType).toLowerCase() == 'application/json') {
             //Cria o objeto JSON para devolver os dados criados na requisição
             let novoFilmeJSON = {} 
+
             //Validação de campos obrigatórios ou com digitação inválida                            
-            if (novosDados.titulo == ''              || novosDados.titulo == undefined            || novosDados.titulo == null           || novosDados.titulo.length > 80           ||
-                novosDados.sinopse == ''             || novosDados.sinopse == undefined          || novosDados.sinopse == null           || novosDados.sinopse.length > 65000        ||
+            if (novosDados.titulo == ''              || novosDados.titulo == undefined           || novosDados.titulo == null            || novosDados.titulo.length > 80            ||
+                novosDados.sinopse == ''             || novosDados.sinopse == undefined          || novosDados.sinopse == null           ||
                 novosDados.duracao == ''             || novosDados.duracao == undefined          || novosDados.duracao == null           || novosDados.duracao.length > 8            ||
                 novosDados.data_lancamento == ''     || novosDados.data_lancamento == undefined  || novosDados.data_lancamento == null   || novosDados.data_lancamento.length != 10  ||
                 novosDados.foto_capa == ''           || novosDados.foto_capa == undefined        || novosDados.foto_capa == null         || novosDados.foto_capa.length > 200        ||
-                novosDados.valor_unitario.length > 6 ||
-                novosDados.id_favorito == ''         || novosDados.id_favorito == undefined      || novosDados.id_favorito == null       || isNaN(novosDados.id_favorito)            ||
+                novosDados.valor_unitario == ''      || novosDados.valor_unitario == undefined   || novosDados.valor_unitario == null    || novosDados.valor_unitario.length > 6     ||
+                novosDados.id_favorito == ''         || novosDados.id_favorito == undefined      || novosDados.id_favorito == null       || isNaN(novosDados.id_classificacao)       ||
                 novosDados.id_classificacao == ''    || novosDados.id_classificacao == undefined || novosDados.id_classificacao == null  || isNaN(novosDados.id_classificacao)         
-            ) {
+            ) { 
+                console.log(novosDados)
                 return message.ERROR_REQUIRED_FIELDS //400
 
             } else {
