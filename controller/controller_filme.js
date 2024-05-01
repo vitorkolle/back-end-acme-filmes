@@ -97,6 +97,7 @@ const setAtualizarFilme = async function (id, novosDados, contentType) {
             if (validarId.length > 0) {
 
                 let filmeAtualizadoJSON = {}
+                
                 if (
                     novosDados.titulo == '' || novosDados.titulo == undefined || novosDados.titulo == null || novosDados.titulo.length > 80 ||
                     novosDados.sinopse == '' || novosDados.sinopse == undefined || novosDados.sinopse == null || novosDados.sinopse.length > 65000 ||
@@ -105,9 +106,10 @@ const setAtualizarFilme = async function (id, novosDados, contentType) {
                     novosDados.foto_capa == '' || novosDados.foto_capa == undefined || novosDados.foto_capa == null || novosDados.foto_capa.length > 200 ||
                     novosDados.valor_unitario.length > 6 ||
                     novosDados.id_favorito == '' || novosDados.id_favorito == undefined || novosDados.id_favorito == null || isNaN(novosDados.id_favorito) ||
-                    novosDados.id_classificacao == '' || novosDados.id_classificacao == undefined || novosDados.id_classificacao == null || isNaN(novosDados.id_classificacao)
+                    novosDados.id_classificacao == '' || novosDados.id_classificacao == undefined || novosDados.id_classificacao == null || isNaN(novosDados.id_classificacao) ||
+                    novosDados.id_ator == ''           || novosDados.id_ator == undefined        || novosDados.id_ator == null           || isNaN(novosDados.id_ator)
                 ) {
-                    return message.ERROR_REQUIRED_FIELDS
+                    return message.ERROR_REQUIRED_FIELDS //400
                 } else {
                     let validateStatus = false
 
@@ -124,6 +126,7 @@ const setAtualizarFilme = async function (id, novosDados, contentType) {
                     if (validateStatus) {
                         novosDados.id = Number(id)
                         let filmeAtualizado = await filmesDAO.updateFilme(novosDados)
+                        let atoresFilme = await filmesDAO.insertAtoresFilme(novosDados.id_ator, novosDados.id)
                         let favorito = await filmesDAO.selectFavorito(novosDados.id_favorito)
                         let classificacao = await classificacaoDAO.selectByIdClassificacao(novosDados.id_classificacao)
 
@@ -131,6 +134,7 @@ const setAtualizarFilme = async function (id, novosDados, contentType) {
                             filmeAtualizadoJSON.filme = novosDados
                             filmeAtualizadoJSON.favorito = Number(favorito[0].favorito)
                             filmeAtualizadoJSON.classificacao = classificacao[0]
+                            filmeAtualizadoJSON.atores = atoresFilme
                             filmeAtualizadoJSON.status = message.SUCCESS_UPDATED_ITEM
                             filmeAtualizadoJSON.status_code = message.SUCCESS_UPDATED_ITEM.status_code
                             filmeAtualizadoJSON.message = message.SUCCESS_UPDATED_ITEM.message
