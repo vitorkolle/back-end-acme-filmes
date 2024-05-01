@@ -67,7 +67,7 @@ app.get('/v2/acmeFilmes/filmes',cors(),async function(request, response, next){
 app.get('/v2/acmeFilmes/filme/:id', cors(), async function(request, response){
     let idFilme = request.params.id
 
-    let dadosFilme = await controllerFilmes.getBuscarFilme(idFilme)
+    let dadosFilme = await controllerFilmes.getBuscarFilme(idFilme) 
 
     response.status(dadosFilme.status_code)
     response.json(dadosFilme)

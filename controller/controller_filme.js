@@ -6,7 +6,7 @@
  ***********************************************************************************************************/
 //Import do arquivo de configuração do projeto
 const message = require('../modulo/config.js')
-
+ 
 //Import do arquivo responsavel pela interação com o BD
 const filmesDAO = require('../model/DAO/filme.js')
 const classificacaoDAO = require('../model/DAO/classificacao.js')
@@ -226,7 +226,7 @@ const getBuscarFilme = async function (id) {
             if (dadosFilme.length > 0) {
                 //Cria o JSON para retorno
                 filmesJSON.file = dadosFilme;
-                filmesJSON.classificacao = classificacao[0].classificacao
+                filmesJSON.classificacao = classificacao[0]
                 filmesJSON.status_code = 200;
 
                 return filmesJSON
@@ -252,13 +252,15 @@ const getBuscarFilmeNome = async function (nome) {
         return message.ERROR_INVALID_REQUEST //400
     } else {
         //encaminha o nome ao DAO para fazer a pesquisa no banco de dados 
-        let novosDados = await filmesDAO.selectByNomeFilme(nomeFilme)
-        //verifica se o DAO retornou dados
-        if (novosDados) {
+        let dadosFilme = await filmesDAO.selectByNomeFilme(nomeFilme)
+        let classificacao = await classificacaoDAO.selectByIdClassificacao(dadosFilme[0].id_classificacao)
+
+        if (dadosFilme) {
             //validação para ver a quantidade de itens retornados
-            if (novosDados.length > 0) {
+            if (dadosFilme.length > 0) {
                 //criação do json para retorno dos dados
-                filmesJSON.file = novosDados
+                filmesJSON.filme = dadosFilme
+                filmesJSON.classificacao = classificacao[0]
                 filmesJSON.status_code = 200
 
                 return filmesJSON

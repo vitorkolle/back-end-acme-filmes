@@ -57,9 +57,13 @@ const getAtor = async function (id) {
 
         for (let index = 0; index < resultDadosAtor.length; index++) {
             const element = resultDadosAtor[index]
+
             let sexoAtor = await atorDAO.selectSexo(element.id_sexoA)
             delete element.id_sexoA
             element.sexo = sexoAtor[0].sexo
+
+            let filmesAtor = await atorDAO.selectFilmesAtor(element.id)
+            element.filmes = filmesAtor[index].titulo
         }
 
         if (resultDadosAtor) {
@@ -88,7 +92,7 @@ const setInserirAtor = async function (dadosAtor, contentType) {
                 dadosAtor.nome == '' || dadosAtor.nome == null || dadosAtor.nome == undefined || dadosAtor.nome.length > 80 ||
                 dadosAtor.foto_ator == '' || dadosAtor.foto_ator == null || dadosAtor.foto_ator == undefined || dadosAtor.foto_ator.length > 80 ||
                 dadosAtor.biografia == '' || dadosAtor.biografia == null || dadosAtor.biografia == undefined ||
-                dadosAtor.id_sexoA == '' || dadosAtor.id_sexoA == null || dadosAtor.id_sexoA == undefined || isNaN(dadosAtor.id_sexoA)
+                dadosAtor.id_sexoA == '' || dadosAtor.id_sexoA == null || dadosAtor.id_sexoA == undefined || isNaN(dadosAtor.id_sexoA) 
             ) {
                 return message.ERROR_REQUIRED_FIELDS //400
             } else {
