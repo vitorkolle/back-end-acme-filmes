@@ -84,6 +84,41 @@ const insertAtor = async function (dadosAtor) {
     }
 }
 
+const insertFilmesAtor = async function (id_filme, id_ator) {
+    try {
+        let sql = `insert into tbl_ator_filme
+
+        (
+            id_ator,
+            id_filme
+          )
+          values(
+            ${id_ator},
+            ${id_filme}
+          )`
+
+         
+          let rsAtorFilme = await prisma.$executeRawUnsafe(sql)
+
+          if(rsAtorFilme){         
+            let sqlFilmes = `select * from tbl_filme where id = ${id_filme}`
+
+            let rsFilme = await prisma.$queryRawUnsafe(sqlFilmes)
+
+            if(rsFilme){
+                return rsFilme
+            }else{
+                return false
+            }
+          }
+          else{
+            return false
+          }
+    } catch (error) {
+        return false
+    }
+}
+
 const selectLastIdAtor = async function () {
     try {
         let sql = 'select cast(last_insert_id() as decimal) as id from tbl_classificacao limit 1'
@@ -199,6 +234,7 @@ module.exports = {
     selectSexo,
     selectBuscarAtor,
     insertAtor,
+    insertFilmesAtor,
     selectLastIdAtor,
     deleteAtor,
     updateAtor,

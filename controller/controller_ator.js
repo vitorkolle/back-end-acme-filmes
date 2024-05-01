@@ -8,6 +8,7 @@
 const message = require('../modulo/config.js')
 
 const atorDAO = require('../model/DAO/atores.js')
+const filmesDAO = require('../model/DAO/filme.js')
 
 const getAllAtores = async function () {
     const atoresJSON = {}
@@ -27,7 +28,7 @@ const getAllAtores = async function () {
                 element.nacionalidade = nacionalidadeAtor[0].pais
 
                 let filmesAtor = await atorDAO.selectFilmesAtor(element.id)
-                element.filmesAtor = filmesAtor
+                element.filmesAtor = filmesAtor[index].titulo
             }
 
             atoresJSON.atores = dadosAtores
@@ -91,18 +92,21 @@ const setInserirAtor = async function (dadosAtor, contentType) {
                 dadosAtor.nome == '' || dadosAtor.nome == null || dadosAtor.nome == undefined || dadosAtor.nome.length > 80 ||
                 dadosAtor.foto_ator == '' || dadosAtor.foto_ator == null || dadosAtor.foto_ator == undefined || dadosAtor.foto_ator.length > 80 ||
                 dadosAtor.biografia == '' || dadosAtor.biografia == null || dadosAtor.biografia == undefined ||
-                dadosAtor.id_sexoA == '' || dadosAtor.id_sexoA == null || dadosAtor.id_sexoA == undefined || isNaN(dadosAtor.id_sexoA) 
+                dadosAtor.id_sexoA == '' || dadosAtor.id_sexoA == null || dadosAtor.id_sexoA == undefined || isNaN(dadosAtor.id_sexoA)   ||
+                dadosAtor.id_filme == '' || dadosAtor.id_filme == null || dadosAtor.id_filme == undefined || isNaN(dadosAtor.id_filme)
             ) {
                 return message.ERROR_REQUIRED_FIELDS //400
             } else {
                 let novoAtor = await atorDAO.insertAtor(dadosAtor)
                 let novoId = await atorDAO.selectLastIdAtor()
+                let filmesAtor = await atorDAO.insertFilmesAtor(dadosAtor.id_filme, novoId[0].id)
                 let sexoAtor = await atorDAO.selectSexo(dadosAtor.id_sexoA)
 
                 if (novoAtor) {
                     novoAtorJSON.id = Number(novoId[0].id)
                     novoAtorJSON.ator = dadosAtor
-                    novoAtor.sexo = sexoAtor
+                    novoAtorJSON.sexo = sexoAtor[0].sexo
+                    novoAtorJSON.filmes = filmesAtor
                     novoAtorJSON.status_code = message.SUCCESS_CREATED_ITEM.status_code //200
                     novoAtorJSON.message = message.SUCCESS_CREATED_ITEM.message
 
@@ -154,18 +158,21 @@ const setupdateAtor = async function(id, dadosAtor, contentType){
                     dadosAtor.nome == ''      || dadosAtor.nome == null      || dadosAtor.nome == undefined      || dadosAtor.nome.length > 80      ||
                     dadosAtor.foto_ator == '' || dadosAtor.foto_ator == null || dadosAtor.foto_ator == undefined || dadosAtor.foto_ator.length > 80 ||
                     dadosAtor.biografia == '' || dadosAtor.biografia == null || dadosAtor.biografia == undefined ||
-                    dadosAtor.id_sexoA == ''  || dadosAtor.id_sexoA == null  || isNaN(dadosAtor.id_sexoA)
+                    dadosAtor.id_sexoA == ''  || dadosAtor.id_sexoA == null  || isNaN(dadosAtor.id_sexoA)        ||
+                    dadosAtor.id_filme == '' || dadosAtor.id_filme == null || dadosAtor.id_filme == undefined || isNaN(dadosAtor.id_filme)
                  ){
                     return message.ERROR_REQUIRED_FIELDS //400
                  }
                  else{
-                    dadosAtor.id = idLocal
+                    dadosAtor.id = Number(idLocal)
                     let atualizarAtor = await atorDAO.updateAtor(dadosAtor)
                     let sexoAtor = await atorDAO.selectSexo(dadosAtor.id_sexoA)
+                    let filmesAtor = await atorDAO.insertFilmesAtor(dadosAtor.id_filme, dadosAtor.id)
 
                     if(atualizarAtor){
                         atorAtualizadoJSON.ator = dadosAtor
                         atorAtualizadoJSON.sexo = sexoAtor[0].sexo
+                        atorAtualizadoJSON.filmes = filmesAtor
                         atorAtualizadoJSON.status = message.SUCCESS_UPDATED_ITEM
                         atorAtualizadoJSON.status_code = message.SUCCESS_UPDATED_ITEM.status_code
                         atorAtualizadoJSON.message = message.SUCCESS_UPDATED_ITEM.message

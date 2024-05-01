@@ -10,7 +10,6 @@ const message = require('../modulo/config.js')
 //Import do arquivo responsavel pela interação com o BD
 const filmesDAO = require('../model/DAO/filme.js')
 const classificacaoDAO = require('../model/DAO/classificacao.js')
-const atoresDAO = require('../model/DAO/atores.js')
 
 //Função para validar e inserir um novo filme
 const setInserirNovoFilme = async function (novosDados, contentType) {
