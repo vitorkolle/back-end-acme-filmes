@@ -21,16 +21,16 @@ const setInserirNovoFilme = async function (novosDados, contentType) {
             let novoFilmeJSON = {}
 
             //Validação de campos obrigatórios ou com digitação inválida                            
-            if (novosDados.titulo == '' || novosDados.titulo == undefined || novosDados.titulo == null || novosDados.titulo.length > 80 ||
-                novosDados.sinopse == '' || novosDados.sinopse == undefined || novosDados.sinopse == null ||
-                novosDados.duracao == '' || novosDados.duracao == undefined || novosDados.duracao == null || novosDados.duracao.length > 8 ||
-                novosDados.data_lancamento == '' || novosDados.data_lancamento == undefined || novosDados.data_lancamento == null || novosDados.data_lancamento.length != 10 ||
-                novosDados.foto_capa == '' || novosDados.foto_capa == undefined || novosDados.foto_capa == null || novosDados.foto_capa.length > 200 ||
-                novosDados.valor_unitario == '' || novosDados.valor_unitario == undefined || novosDados.valor_unitario == null || novosDados.valor_unitario.length > 6 ||
-                novosDados.id_favorito == '' || novosDados.id_favorito == undefined || novosDados.id_favorito == null || isNaN(novosDados.id_classificacao) ||
-                novosDados.id_classificacao == '' || novosDados.id_classificacao == undefined || novosDados.id_classificacao == null || isNaN(novosDados.id_classificacao)
+            if (novosDados.titulo == ''           || novosDados.titulo == undefined            || novosDados.titulo == null           || novosDados.titulo.length > 80           ||
+                novosDados.sinopse == ''          || novosDados.sinopse == undefined           || novosDados.sinopse == null          ||
+                novosDados.duracao == ''          || novosDados.duracao == undefined           || novosDados.duracao == null          || novosDados.duracao.length > 8           ||
+                novosDados.data_lancamento == ''  || novosDados.data_lancamento == undefined   || novosDados.data_lancamento == null  || novosDados.data_lancamento.length != 10 ||
+                novosDados.foto_capa == ''        || novosDados.foto_capa == undefined         || novosDados.foto_capa == null        || novosDados.foto_capa.length > 200       ||
+                novosDados.valor_unitario == ''   || novosDados.valor_unitario == undefined    || novosDados.valor_unitario == null   || novosDados.valor_unitario.length > 6    ||
+                novosDados.id_favorito == ''      || novosDados.id_favorito == undefined       || novosDados.id_favorito == null      || isNaN(novosDados.id_classificacao)      ||
+                novosDados.id_classificacao == '' || novosDados.id_classificacao == undefined  || novosDados.id_classificacao == null || isNaN(novosDados.id_classificacao)      ||
+                novosDados.id_ator == ''          || novosDados.id_ator == undefined           || novosDados.id_ator == null          || isNaN(novosDados.id_ator)
             ) {
-                console.log(novosDados)
                 return message.ERROR_REQUIRED_FIELDS //400
 
             } else {
@@ -49,10 +49,11 @@ const setInserirNovoFilme = async function (novosDados, contentType) {
                 }
 
                 //Validação para verificar se podemos encaminhar os dados para o DAO
-                if (validateStatus) {
+                if (validateStatus) { 
                     //encaminha os dados do filme para o DAO inserir no Banco de Dados
                     let novoFilme = await filmesDAO.insertFilme(novosDados)
                     let filmeId = await filmesDAO.selectIdLastFilme()
+                    let atoresFilme = await filmesDAO.insertAtoresFilme(novosDados.id_ator, filmeId[0].id)
                     let favorito = await filmesDAO.selectFavorito(novosDados.id_favorito)
                     let classificacao = await classificacaoDAO.selectByIdClassificacao(novosDados.id_classificacao)
 
@@ -63,6 +64,7 @@ const setInserirNovoFilme = async function (novosDados, contentType) {
                         novoFilmeJSON.favorito = Number(favorito[0].favorito)
                         novoFilmeJSON.classificacao = classificacao[0]
                         novoFilmeJSON.filme.id = Number(filmeId[0].id)
+                        novoFilmeJSON.atores = atoresFilme
                         novoFilmeJSON.status = message.SUCCESS_CREATED_ITEM
                         novoFilmeJSON.status_code = message.SUCCESS_CREATED_ITEM.status_code
                         novoFilmeJSON.message = message.SUCCESS_CREATED_ITEM.message

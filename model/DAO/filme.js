@@ -4,7 +4,7 @@
  * Autor: Vitor Paes Kolle
  * Versão: 1.0 
  ***********************************************************************************************************/
- 
+
 //Import da biblioteca do prisma client
 const { PrismaClient } = require('@prisma/client');
 
@@ -72,7 +72,7 @@ const insertFilme = async function (dadosFilme) {
         let result = await prisma.$executeRawUnsafe(sql)
 
         if (result) {
-            return true 
+            return true
         } else {
             return false
         }
@@ -80,6 +80,40 @@ const insertFilme = async function (dadosFilme) {
         return false
     }
 
+}
+
+const insertAtoresFilme = async function (id_ator, id_filme) {
+    try {
+        let sql = `insert into tbl_ator_filme
+
+        (
+            id_ator,
+            id_filme
+          )
+          values(
+            ${id_ator},
+            ${id_filme}
+          )`
+
+         
+          let rsAtorFilme = await prisma.$executeRawUnsafe(sql)
+
+          if(rsAtorFilme){          
+            let rsAtor = await atoresDAO.selectBuscarAtor(id_ator)
+
+            if(rsAtor){
+                return rsAtor
+            }
+            else{
+                return false
+            }
+          }
+          else{
+            return false
+          }
+    } catch (error) {
+        return false
+    }
 }
 
 //Função para atualizar um filme no banco de dados
@@ -160,7 +194,7 @@ const selectIdLastFilme = async function () {
         let rsIdFilme = await prisma.$queryRawUnsafe(sql)
         return rsIdFilme
 
-    } catch (error) { 
+    } catch (error) {
         return false
     }
 }
@@ -206,7 +240,7 @@ const selectByIdFilme = async function (id) {
 const selectByNomeFilme = async function (nome) {
     try {
         let sql = `select * from tbl_filme where tbl_filme.titulo LIKE "%${nome}%"`
-    
+
         let rsFilme = await prisma.$queryRawUnsafe(sql)
 
         return rsFilme
@@ -218,41 +252,41 @@ const selectByNomeFilme = async function (nome) {
 }
 
 //Função para verificar se o filme é favorito
-const selectFavorito = async function(id){
+const selectFavorito = async function (id) {
     try {
         let sql = `select * from tbl_favorito where favorito = ${id}`
 
         let rsFavorito = await prisma.$queryRawUnsafe(sql)
 
-        if(rsFavorito){
+        if (rsFavorito) {
             return rsFavorito
-        }else{
+        } else {
             return false
         }
     } catch (error) {
         return false
     }
-}  
+}
 
-const selectAtoresFilme = async function(idFilme){
+const selectAtoresFilme = async function (idFilme) {
     try {
         let sql = `select * from tbl_ator_filme where id_filme = ${idFilme}`
 
         let rsAtorF = await prisma.$queryRawUnsafe(sql)
 
-        if(rsAtorF){
+        if (rsAtorF) {
             for (let index = 0; index < rsAtorF.length; index++) {
                 const element = rsAtorF[index];
 
                 let rsAtor = await atoresDAO.selectBuscarAtor(Number(element.id_ator))
-              
-                if(rsAtor){
+
+                if (rsAtor) {
                     return rsAtor
-                }else{
+                } else {
                     return false
                 }
             }
-        }else{
+        } else {
             return false
         }
     } catch (error) {
@@ -263,6 +297,7 @@ const selectAtoresFilme = async function(idFilme){
 //Exportação das funções 
 module.exports = {
     insertFilme,
+    insertAtoresFilme,
     updateFilme,
     deleteFilme,
     selectAllFilmes,
