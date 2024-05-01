@@ -11,6 +11,9 @@ const { PrismaClient } = require('@prisma/client');
 //Instancia da classe prisma client
 const prisma = new PrismaClient()
 
+
+const atoresDAO = require('../DAO/atores')
+
 //Função para inserir um filme no banco de dados
 const insertFilme = async function (dadosFilme) {
     try {
@@ -69,7 +72,7 @@ const insertFilme = async function (dadosFilme) {
         let result = await prisma.$executeRawUnsafe(sql)
 
         if (result) {
-            return true
+            return true 
         } else {
             return false
         }
@@ -231,6 +234,32 @@ const selectFavorito = async function(id){
     }
 }  
 
+const selectAtoresFilme = async function(idFilme){
+    try {
+        let sql = `select * from tbl_ator_filme where id_filme = ${idFilme}`
+
+        let rsAtorF = await prisma.$queryRawUnsafe(sql)
+
+        if(rsAtorF){
+            for (let index = 0; index < rsAtorF.length; index++) {
+                const element = rsAtorF[index];
+
+                let rsAtor = await atoresDAO.selectBuscarAtor(Number(element.id_ator))
+              
+                if(rsAtor){
+                    return rsAtor
+                }else{
+                    return false
+                }
+            }
+        }else{
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
 //Exportação das funções 
 module.exports = {
     insertFilme,
@@ -240,6 +269,7 @@ module.exports = {
     selectByIdFilme,
     selectByNomeFilme,
     selectIdLastFilme,
-    selectFavorito
+    selectFavorito,
+    selectAtoresFilme
 }
 
