@@ -70,7 +70,6 @@ const selectFilmesDiretor = async function (idDiretor) {
 
         let rsFilmeD = await prisma.$queryRawUnsafe(sql)
 
-
         if (rsFilmeD) {
             for (let index = 0; index < rsFilmeD.length; index++) {
                 const element = rsFilmeD[index]
@@ -195,11 +194,38 @@ const deleteDiretor = async function (id) {
 
         let rsDiretor = await prisma.$executeRawUnsafe(sql)
 
+        if (rsDiretor) { 
+            return rsDiretor
+        } else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
+const updateDiretor = async function (dadosDiretor) {
+    try {
+        let sql =
+
+            ` update tbl_diretor
+                      set
+                      nome = '${dadosDiretor.nome}',
+                      foto_diretor = '${dadosDiretor.foto_diretor}',
+                      biografia = '${dadosDiretor.biografia}',
+                      data_nascimento = '${dadosDiretor.data_nascimento}',
+                      id_sexoD = ${dadosDiretor.id_sexoD}
+
+                      where id = ${dadosDiretor.id}
+        `
+        let rsDiretor = prisma.$executeRawUnsafe(sql)
+
         if (rsDiretor) {
             return rsDiretor
         } else {
             return false
         }
+
     } catch (error) {
         return false
     }
@@ -215,5 +241,6 @@ module.exports = {
     selectLastIdDiretor,
     insertDiretor,
     insertFilmesDiretor,
-    deleteDiretor
+    deleteDiretor,
+    updateDiretor
 }

@@ -146,11 +146,61 @@ const setDeletarDiretor = async function (id) {
     } else {
         return message.ERROR_NOT_FOUND //404
     }
+} 
+
+const setupdateDiretor = async function(id, dadosDiretor, contentType){
+    try {
+        if(String(contentType).toLowerCase() == 'application/json'){
+            let idLocal = id
+
+            const validarId = await diretorDAO.selectBuscarDiretor(idLocal)
+            if(validarId.length > 0){
+                let atorAtualizadoJSON = {}
+
+                if(
+                    dadosDiretor.nome == ''      || dadosDiretor.nome == null      || dadosDiretor.nome == undefined      || dadosDiretor.nome.length > 80      ||
+                    dadosDiretor.foto_diretor == '' || dadosDiretor.foto_diretor == null || dadosDiretor.foto_diretor == undefined || dadosDiretor.foto_diretor.length > 80 ||
+                    dadosDiretor.data_nascimento == '' || dadosDiretor.data_nascimento == null || dadosDiretor.data_nascimento == undefined       || dadosDiretor.data_nascimento.length > 10 ||
+                    dadosDiretor.biografia == '' || dadosDiretor.biografia == null || dadosDiretor.biografia == undefined ||
+                    dadosDiretor.id_sexoD == ''  || dadosDiretor.id_sexoD == null  || isNaN(dadosDiretor.id_sexoD)        ||
+                    dadosDiretor.id_filme == '' || dadosDiretor.id_filme == null || dadosDiretor.id_filme == undefined || isNaN(dadosDiretor.id_filme)
+                 ){
+                    return message.ERROR_REQUIRED_FIELDS //400
+                 }
+                 else{
+                    dadosDiretor.id = Number(idLocal)
+                    let atualizarDiretor = await diretorDAO.updateDiretor(dadosDiretor)
+                    let sexoDiretor = await diretorDAO.selectSexo(dadosDiretor.id_sexoD)
+                    let filmesDiretor = await diretorDAO.insertFilmesDiretor(dadosDiretor.id_filme, dadosDiretor.id)
+
+                    if(atualizarDiretor){
+                        atorAtualizadoJSON.ator = dadosDiretor
+                        atorAtualizadoJSON.sexo = sexoDiretor[0].sexo
+                        atorAtualizadoJSON.filmes = filmesDiretor
+                        atorAtualizadoJSON.status = message.SUCCESS_UPDATED_ITEM
+                        atorAtualizadoJSON.status_code = message.SUCCESS_UPDATED_ITEM.status_code
+                        atorAtualizadoJSON.message = message.SUCCESS_UPDATED_ITEM.message
+
+                        return atorAtualizadoJSON
+                    }else{
+                        return message.ERROR_INTERNAL_SERVER_DB //500
+                    }
+                 }
+            }else{
+                return message.ERROR_NOT_FOUND //404
+            }
+        }else{
+            return message.ERROR_CONTENT_TYPE //415
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER //500
+    }
 }
 
 module.exports = {
     getAllDiretores,
     getDiretor,
     setInserirDiretor,
-    setDeletarDiretor
+    setDeletarDiretor,
+    setupdateDiretor
 }

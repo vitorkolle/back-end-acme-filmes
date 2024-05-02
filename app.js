@@ -340,7 +340,21 @@ app.delete('/v2/acmeFilmes/diretor/:id', cors(), async function(request, respons
     response.json(resultDadosAtor.message)
 })
 
+//endpoint que atualiza um filme do banco de dados
+app.put('/v2/acmeFilmes/diretor/:id', cors(), bodyParserJSON, async function(request, response){
+    let idDiretor = request.params.id
+    const novosDados = request.body
+    const contentType = request.header('content-type')
 
+    let resultDadosDiretor = await controllerDiretores.setupdateDiretor(idDiretor, novosDados, contentType)
+
+    response.status(resultDadosDiretor.status_code)
+    response.json(resultDadosDiretor)
+
+})
+
+
+/********************************************************************************************************************************** */
 //Configuração para que a API use a porta 8080
 app.listen('8080', function(){
   console.log('API funcionando e aguardando requisições')
