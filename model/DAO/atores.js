@@ -8,9 +8,6 @@ const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
 
-
-const filmesDAO = require('../DAO/filme.js')
-
 const selectALlAtores = async function () {
     try {
         let sql = 'select * from tbl_ator'
@@ -121,7 +118,7 @@ const insertFilmesAtor = async function (id_filme, id_ator) {
 
 const selectLastIdAtor = async function () {
     try {
-        let sql = 'select cast(last_insert_id() as decimal) as id from tbl_classificacao limit 1'
+        let sql = 'select cast(last_insert_id() as decimal) as id from tbl_ator limit 1'
 
         let resultId = await prisma.$queryRawUnsafe(sql)
 
@@ -229,6 +226,7 @@ const selectFilmesAtor = async function (idAtor) {
         return false
     }
 }
+
 module.exports = {
     selectALlAtores,
     selectSexo,

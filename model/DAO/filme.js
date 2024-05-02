@@ -90,7 +90,7 @@ const insertAtoresFilme = async function (id_ator, id_filme) {
             id_ator,
             id_filme
           )
-          values(
+          values( 
             ${id_ator},
             ${id_filme}
           )`

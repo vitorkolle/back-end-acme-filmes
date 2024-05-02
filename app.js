@@ -32,6 +32,7 @@ const controllerFilmes = require('./controller/controller_filme.js')
 const controllerClassificacao = require('./controller/controller_classificacao.js')
 const controllerGenero = require('./controller/controller_genero.js')
 const controllerAtores = require('./controller/controller_ator.js')
+const controllerDiretores = require('./controller/controller_diretor.js')
 
 
 //Criação do App
@@ -299,8 +300,35 @@ app.put('/v2/acmeFilmes/ator/:id', cors(), bodyParserJSON, async function(reques
 })
 
 /****************************************Endpoints de Diretores*********************************************/ 
+//endpoint que retorna todos os diretores
+app.get('/v2/acmeFilmes/diretores', cors(), async function(request, response){
+    let resultDadosDiretores = await controllerDiretores.getAllDiretores()
 
+    response.status(resultDadosDiretores.status_code)
+    response.json(resultDadosDiretores)
+})
 
+//endpoint que busca um ator filtrando pelo id
+app.get('/v2/acmeFilmes/diretor/:id', cors(), async function(request, response){
+    let idDiretor = request.params.id
+
+    let resultDadosDiretor = await controllerDiretores.getDiretor(idDiretor)
+
+    response.status(resultDadosDiretor.status_code)
+    response.json(resultDadosDiretor)
+})
+
+//endpoint que cadastra um diretor no banco de dados
+app.post('/v2/acmeFilmes/diretor', cors(), bodyParserJSON, async function(request, response){
+    const contentType = request.header('content-type')
+
+    const dadosDiretor = request.body
+
+    let resultDadosDiretor = await controllerDiretores.setInserirDiretor(dadosDiretor, contentType)
+
+    response.status(resultDadosDiretor.status_code)
+    response.json(resultDadosDiretor)
+})
 
 
 //Configuração para que a API use a porta 8080

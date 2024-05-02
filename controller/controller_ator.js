@@ -8,7 +8,7 @@
 const message = require('../modulo/config.js')
 
 const atorDAO = require('../model/DAO/atores.js')
-const filmesDAO = require('../model/DAO/filme.js')
+
 
 const getAllAtores = async function () {
     const atoresJSON = {}
@@ -41,7 +41,7 @@ const getAllAtores = async function () {
             return message.ERROR_NOT_FOUND //404
         }
     } else {
-        return message.ERROR_INTERNAL_SERVER_DB //500
+        return message.ERROR_INTERNAL_SERVER_DB //500 
     }
 
 }
