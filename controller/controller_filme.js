@@ -205,9 +205,9 @@ const getListarFilmes = async function () {
                 let atores = await filmesDAO.selectAtoresFilme(element.id)
 
                 if (atores) {
-                    filmesJSON.atores = atores
+                    element.atores = atores
                 }else{
-                    filmesJSON.atores = null
+                    element.atores = null
                 }
             }
 
@@ -244,13 +244,14 @@ const getBuscarFilme = async function (id) {
     } else {
         //Encaminha o ID para a DAO buscar no banco de dados
         let dadosFilme = await filmesDAO.selectByIdFilme(idFilme)
-        let classificacao = await classificacaoDAO.selectByIdClassificacao(dadosFilme[0].id_classificacao)
-        let atores = await filmesDAO.selectAtoresFilme(dadosFilme[0].id)
 
         //Verifica se o DAO retornou dados
         if (dadosFilme) {
             //Validação para verificar a quantidade de itens retornados
             if (dadosFilme.length > 0) {
+                let classificacao = await classificacaoDAO.selectByIdClassificacao(dadosFilme[0].id_classificacao)
+                let atores = await filmesDAO.selectAtoresFilme(dadosFilme[0].id) 
+                
                 //Cria o JSON para retorno
                 filmesJSON.filme = dadosFilme;
                 filmesJSON.classificacao = classificacao[0]
@@ -281,11 +282,11 @@ const getBuscarFilmeNome = async function (nome) {
     } else {
         //encaminha o nome ao DAO para fazer a pesquisa no banco de dados 
         let dadosFilme = await filmesDAO.selectByNomeFilme(nomeFilme)
-        let classificacao = await classificacaoDAO.selectByIdClassificacao(dadosFilme[0].id_classificacao)
 
         if (dadosFilme) {
             //validação para ver a quantidade de itens retornados
             if (dadosFilme.length > 0) {
+                let classificacao = await classificacaoDAO.selectByIdClassificacao(dadosFilme[0].id_classificacao)
                 //criação do json para retorno dos dados
                 filmesJSON.filme = dadosFilme
                 filmesJSON.classificacao = classificacao[0]

@@ -291,7 +291,7 @@ const selectFavorito = async function (id) {
 
 const selectAtoresFilme = async function (idFilme) {
     try {
-        let sql = `select * from tbl_ator_filme where id_filme = ${idFilme}`
+        let sql = `select * from tbl_ator_filme where id_filme = ${idFilme}` 
 
         let rsAtorF = await prisma.$queryRawUnsafe(sql)
 
