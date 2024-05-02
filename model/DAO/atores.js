@@ -134,13 +134,35 @@ const selectLastIdAtor = async function () {
 
 const deleteAtor = async function (id) {
     try {
-        let sql = `delete from tbl_ator where id = ${id}`
+        let sql 
+        
+        sql =  
+        `
+        SET FOREIGN_KEY_CHECKS=0;
+        `
+        let rs1 = await prisma.$executeRawUnsafe(sql)
 
-        let rsAtor = await prisma.$queryRawUnsafe(sql)
+        if(rs1 == 0){
+            sql =  
+            `delete from tbl_ator where id = ${id};`
+            
+            let rsAtor =  await prisma.$executeRawUnsafe(sql)
 
-        if (rsAtor) {
-            return rsAtor
-        } else {
+            if (rsAtor) {
+                sql = `SET FOREIGN_KEY_CHECKS=1;`
+                
+                let rsFinal = await prisma.$executeRawUnsafe(sql)
+
+                if(rsFinal == 0){
+                    return rsAtor
+                }else{
+                    return false
+                }
+               
+            } else {
+                return false
+            }
+        }else{
             return false
         }
     } catch (error) {
@@ -208,7 +230,7 @@ const selectFilmesAtor = async function (idAtor) {
             for (let index = 0; index < rsFilmeA.length; index++) {
                 const element = rsFilmeA[index]
 
-                let sqlFilme = `select * from tbl_filme where id = ${element.id_filme}`
+                let sqlFilme = `select * from tbl_filme where id = ${element.id_filme}` 
 
                 let rsFilme = await prisma.$queryRawUnsafe(sqlFilme)
 
