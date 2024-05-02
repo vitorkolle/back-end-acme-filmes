@@ -62,12 +62,14 @@ const insertAtor = async function (dadosAtor) {
                 nome,
                 foto_ator,
                 biografia,
-                id_sexoA
+                id_sexoA,
+                data_nascimento
             )values(
                 '${dadosAtor.nome}',
                 '${dadosAtor.foto_ator}',
                 '${dadosAtor.biografia}',
-                ${dadosAtor.id_sexoA}
+                ${dadosAtor.id_sexoA},
+                '${dadosAtor.data_nascimento}'
             )`
         let rsAtor = await prisma.$executeRawUnsafe(sql)
 
@@ -179,10 +181,12 @@ const updateAtor = async function (dadosAtor) {
                       nome = '${dadosAtor.nome}',
                       foto_ator = '${dadosAtor.foto_ator}',
                       biografia = '${dadosAtor.biografia}',
-                      id_sexoA = ${dadosAtor.id_sexoA}
+                      id_sexoA = ${dadosAtor.id_sexoA},
+                      data_nascimento = '${dadosAtor.data_nascimento}'
 
                       where id = ${dadosAtor.id}
         `
+        console.log(sql)
         let rsAtor = prisma.$executeRawUnsafe(sql)
 
         if (rsAtor) {
