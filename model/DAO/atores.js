@@ -186,7 +186,6 @@ const updateAtor = async function (dadosAtor) {
 
                       where id = ${dadosAtor.id}
         `
-        console.log(sql)
         let rsAtor = prisma.$executeRawUnsafe(sql)
 
         if (rsAtor) {

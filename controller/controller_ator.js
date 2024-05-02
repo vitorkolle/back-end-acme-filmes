@@ -161,7 +161,7 @@ const setupdateAtor = async function(id, dadosAtor, contentType){
                     dadosAtor.nome == ''      || dadosAtor.nome == null      || dadosAtor.nome == undefined      || dadosAtor.nome.length > 80      ||
                     dadosAtor.foto_ator == '' || dadosAtor.foto_ator == null || dadosAtor.foto_ator == undefined || dadosAtor.foto_ator.length > 80 ||
                     dadosAtor.biografia == '' || dadosAtor.biografia == null || dadosAtor.biografia == undefined ||
-           // dadosAtor.data_nascimento == '' || dadosAtor.data_nascimento == null || dadosAtor.data_nascimento == undefined       || dadosAtor.data_nascimento.length > 10 ||
+              dadosAtor.data_nascimento == '' || dadosAtor.data_nascimento == null || dadosAtor.data_nascimento == undefined       || dadosAtor.data_nascimento.length > 10 ||
                     dadosAtor.id_sexoA == ''  || dadosAtor.id_sexoA == null  || isNaN(dadosAtor.id_sexoA)        ||
                     dadosAtor.id_filme == '' || dadosAtor.id_filme == null || dadosAtor.id_filme == undefined || isNaN(dadosAtor.id_filme)
                  ){
