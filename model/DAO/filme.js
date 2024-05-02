@@ -275,7 +275,7 @@ const selectByNomeFilme = async function (nome) {
 //Função para verificar se o filme é favorito
 const selectFavorito = async function (id) {
     try {
-        let sql = `select * from tbl_favorito where favorito = ${id}`
+        let sql = `select * from tbl_favorito where id = ${id}`
 
         let rsFavorito = await prisma.$queryRawUnsafe(sql)
 

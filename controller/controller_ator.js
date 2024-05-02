@@ -105,6 +105,8 @@ const setInserirAtor = async function (dadosAtor, contentType) {
                 let filmesAtor = await atorDAO.insertFilmesAtor(dadosAtor.id_filme, novoId[0].id)
                 let sexoAtor = await atorDAO.selectSexo(dadosAtor.id_sexoA)
 
+                console.log(filmesAtor)
+
                 if (novoAtor) {
                     novoAtorJSON.id = Number(novoId[0].id)
                     novoAtorJSON.ator = dadosAtor

@@ -189,17 +189,40 @@ const insertFilmesDiretor = async function (id_filme, id_diretor) {
 
 const deleteDiretor = async function (id) {
     try {
-        let sql =
-         `delete from tbl_diretor where id = ${id};`
+        //Script sql para deletar um filme filtrando pelo id
+        let sql
 
-        let rsDiretor = await prisma.$executeRawUnsafe(sql)
+        sql =
+            `
+        SET FOREIGN_KEY_CHECKS=0;
+        `
+        let rs1 = await prisma.$executeRawUnsafe(sql)
 
-        if (rsDiretor) { 
-            return rsDiretor
+        if (rs1 == 0) {
+            sql =
+                `delete from tbl_diretor where id = ${id};`
+
+            let rsDiretor = await prisma.$executeRawUnsafe(sql)
+
+            if (rsDiretor) {
+                sql = `SET FOREIGN_KEY_CHECKS=1;`
+
+                let rsFinal = await prisma.$executeRawUnsafe(sql)
+
+                if (rsFinal == 0) {
+                    return rsDiretor
+                } else {
+                    return false
+                }
+
+            } else {
+                return false
+            }
         } else {
             return false
         }
-    } catch (error) {
+    }
+    catch (error) {
         return false
     }
 }

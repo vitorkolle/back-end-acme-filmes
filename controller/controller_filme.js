@@ -129,7 +129,7 @@ const setAtualizarFilme = async function (id, novosDados, contentType) {
                         let favorito = await filmesDAO.selectFavorito(novosDados.id_favorito)
                         let classificacao = await classificacaoDAO.selectByIdClassificacao(novosDados.id_classificacao)
 
-                        if (filmeAtualizado && favorito && classificacao) {
+                        if (filmeAtualizado) {
                             filmeAtualizadoJSON.filme = novosDados
                             filmeAtualizadoJSON.favorito = Number(favorito[0].favorito)
                             filmeAtualizadoJSON.classificacao = classificacao[0]
@@ -251,7 +251,7 @@ const getBuscarFilme = async function (id) {
             if (dadosFilme.length > 0) {
                 let classificacao = await classificacaoDAO.selectByIdClassificacao(dadosFilme[0].id_classificacao)
                 let atores = await filmesDAO.selectAtoresFilme(dadosFilme[0].id) 
-                
+
                 //Cria o JSON para retorno
                 filmesJSON.filme = dadosFilme;
                 filmesJSON.classificacao = classificacao[0]
