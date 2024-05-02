@@ -95,22 +95,22 @@ const insertAtoresFilme = async function (id_ator, id_filme) {
             ${id_filme}
           )`
 
-         
-          let rsAtorFilme = await prisma.$executeRawUnsafe(sql)
 
-          if(rsAtorFilme){          
+        let rsAtorFilme = await prisma.$executeRawUnsafe(sql)
+
+        if (rsAtorFilme) {
             let rsAtor = await atoresDAO.selectBuscarAtor(id_ator)
 
-            if(rsAtor){
+            if (rsAtor) {
                 return rsAtor
             }
-            else{
+            else {
                 return false
             }
-          }
-          else{
+        }
+        else {
             return false
-          }
+        }
     } catch (error) {
         return false
     }
@@ -171,24 +171,42 @@ const updateFilme = async function (novosDados) {
 const deleteFilme = async function (id) {
     try {
         //Script sql para deletar um filme filtrando pelo id
-        let sql = 
-        `
-        delete from tbl_filme where id = ${id};
+        let sql
 
+        sql =
+            `
+        SET FOREIGN_KEY_CHECKS=0;
         `
-        //sem retorno de dados
-        let rsFilme = await prisma.$executeRawUnsafe(sql)
+        let rs1 = await prisma.$executeRawUnsafe(sql)
 
-        if (rsFilme) {
-            return rsFilme
+        if (rs1 == 0) {
+            sql =
+                `delete from tbl_filme where id = ${id};`
+
+            let rsFilme = await prisma.$executeRawUnsafe(sql)
+
+            if (rsFilme) {
+                sql = `SET FOREIGN_KEY_CHECKS=1;`
+
+                let rsFinal = await prisma.$executeRawUnsafe(sql)
+
+                if (rsFinal == 0) {
+                    return rsFilme
+                } else {
+                    return false
+                }
+
+            } else {
+                return false
+            }
         } else {
             return false
         }
-    } catch (error) {
+    }
+    catch (error) {
         return false
     }
 }
-
 //Função para reeber o id do último filme cadastrado
 const selectIdLastFilme = async function () {
     try {

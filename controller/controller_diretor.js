@@ -65,7 +65,7 @@ const getDiretor = async function (id) {
             element.sexo = sexoDiretor[0].sexo
 
             let filmesDiretor = await diretorDAO.selectFilmesDiretor(element.id)
-            element.filmes = filmesDiretor[index].titulo
+            element.filmes = filmesDiretor
         }
 
         if (resultDadosDiretor) {

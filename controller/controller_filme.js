@@ -171,6 +171,7 @@ const setExcluirFilme = async function (id) {
         } else {
             //Encaminha o id para a DAO deletar no banco de dados
             let novosDados = await filmesDAO.deleteFilme(idFilme)
+            console.log(novosDados)
 
             //verificar se a DAO apagou o filme
             if (novosDados) {
@@ -226,6 +227,11 @@ const getListarFilmes = async function () {
 
 //Função para buscar um filme pelo id
 const getBuscarFilme = async function (id) {
+    try {
+        
+    } catch (error) {
+        
+    }
     //Recebe o ID do filme
     let idFilme = id
     //Cria o objeto JSON
