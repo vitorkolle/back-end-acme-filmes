@@ -171,8 +171,11 @@ const updateFilme = async function (novosDados) {
 const deleteFilme = async function (id) {
     try {
         //Script sql para deletar um filme filtrando pelo id
-        let sql = `delete from tbl_filme where id = ${id}`
+        let sql = 
+        `
+        delete from tbl_filme where id = ${id};
 
+        `
         //sem retorno de dados
         let rsFilme = await prisma.$executeRawUnsafe(sql)
 

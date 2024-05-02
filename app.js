@@ -330,6 +330,16 @@ app.post('/v2/acmeFilmes/diretor', cors(), bodyParserJSON, async function(reques
     response.json(resultDadosDiretor)
 })
 
+//endpoint que deleta um diretor do banco de dados
+app.delete('/v2/acmeFilmes/diretor/:id', cors(), async function(request, response){
+    let idAtor = request.params.id
+
+    let resultDadosAtor = await controllerDiretores.setDeletarDiretor(idAtor)
+
+    response.status(resultDadosAtor.status_code)
+    response.json(resultDadosAtor.message)
+})
+
 
 //Configuração para que a API use a porta 8080
 app.listen('8080', function(){

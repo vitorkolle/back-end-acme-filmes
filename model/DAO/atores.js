@@ -175,7 +175,7 @@ const updateAtor = async function (dadosAtor) {
 }
 
 const selectNacionalidadeAtor = async function (idAtor) {
-    try {
+    try { 
         let sql = `select * from tbl_nacionalidadeAator where id_ator = ${idAtor}`
 
         let rsNacionalidade = await prisma.$queryRawUnsafe(sql)

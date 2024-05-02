@@ -12,7 +12,7 @@ const selectALlDiretores = async function () {
     try {
         let sql = 'select * from tbl_diretor'
 
-        let rsDiretor = await prisma.$queryRawUnsafe(sql) 
+        let rsDiretor = await prisma.$queryRawUnsafe(sql)
 
         if (rsDiretor) {
             return rsDiretor
@@ -42,12 +42,12 @@ const selectSexo = async function (id) {
 
 const selectNacionalidadeDiretor = async function (idDiretor) {
     try {
-        let sql = `select * from tbl_nacionalidadeAator where id_ator = ${idDiretor}`
+        let sql = `select * from tbl_nacionalidadeD_diretor where id_diretor = ${idDiretor}`
 
         let rsNacionalidade = await prisma.$queryRawUnsafe(sql)
 
         if (rsNacionalidade) {
-            let sqlNacionalidade = `select * from tbl_nacionalidadeA where id = ${rsNacionalidade[0].id_nacionalidadeA}`
+            let sqlNacionalidade = `select * from tbl_nacionalidadeD where id = ${rsNacionalidade[0].id_nacionalidadeD}`
 
             let rsFinal = await prisma.$queryRawUnsafe(sqlNacionalidade)
 
@@ -70,7 +70,6 @@ const selectFilmesDiretor = async function (idDiretor) {
 
         let rsFilmeD = await prisma.$queryRawUnsafe(sql)
 
-        console.log(sql)
 
         if (rsFilmeD) {
             for (let index = 0; index < rsFilmeD.length; index++) {
@@ -143,9 +142,9 @@ const insertDiretor = async function (dadosDiretor) {
                 ${dadosDiretor.id_sexoD}
             )`
 
-        let rsAtor = await prisma.$executeRawUnsafe(sql)
+        let rsDiretor = await prisma.$executeRawUnsafe(sql)
 
-        if (rsAtor) {
+        if (rsDiretor) {
             return true
         } else {
             return false
@@ -168,26 +167,44 @@ const insertFilmesDiretor = async function (id_filme, id_diretor) {
             ${id_filme}
           )`
 
-          let rsDiretorFilme = await prisma.$executeRawUnsafe(sql)
+        let rsDiretorFilme = await prisma.$executeRawUnsafe(sql)
 
-          if(rsDiretorFilme){         
+        if (rsDiretorFilme) {
             let sqlFilmes = `select * from tbl_filme where id = ${id_filme}`
 
             let rsFilme = await prisma.$queryRawUnsafe(sqlFilmes)
 
-            if(rsFilme){
+            if (rsFilme) {
                 return rsFilme
-            }else{
+            } else {
                 return false
             }
-          }
-          else{
+        }
+        else {
             return false
-          }
+        }
     } catch (error) {
         return false
     }
 }
+
+const deleteDiretor = async function (id) {
+    try {
+        let sql =
+         `delete from tbl_diretor where id = ${id};`
+
+        let rsDiretor = await prisma.$executeRawUnsafe(sql)
+
+        if (rsDiretor) {
+            return rsDiretor
+        } else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
 
 module.exports = {
     selectALlDiretores,
@@ -197,5 +214,6 @@ module.exports = {
     selectBuscarDiretor,
     selectLastIdDiretor,
     insertDiretor,
-    insertFilmesDiretor
+    insertFilmesDiretor,
+    deleteDiretor
 }

@@ -23,10 +23,14 @@ const getAllDiretores = async function () {
                 element.sexo = sexoDiretor[0].sexo
 
                 let nacionalidadeDiretor = await diretorDAO.selectNacionalidadeDiretor(element.id)
-                element.nacionalidade = nacionalidadeDiretor[0].pais
+                if(nacionalidadeDiretor){
+                    element.nacionalidade = nacionalidadeDiretor[index].pais
+                }else{
+                    element.nacionalidade = null
+                }
 
                 let filmesDiretor = await diretorDAO.selectFilmesDiretor(element.id)
-                element.filmesDiretor = filmesDiretor[index].titulo
+                element.filmes = filmesDiretor
             }
 
             diretoresJSON.diretores = dadosDiretores
@@ -122,8 +126,31 @@ const setInserirDiretor = async function (dadosDiretor, contentType) {
     }
 }
 
+const setDeletarDiretor = async function (id) {
+    let idDiretor = id
+
+    let validarId = await diretorDAO.selectBuscarDiretor(idDiretor)
+
+    if (validarId.length > 0) {
+        if (idDiretor == '' || idDiretor == null || idDiretor == undefined) {
+            return message.ERROR_INVALID_ID //400
+        } else {
+            let dadosDiretor = await diretorDAO.deleteDiretor(idDiretor)
+
+            if (dadosDiretor) {
+                return message.SUCCESS_DELETED_ITEM //200
+            } else {
+                return message.ERROR_INTERNAL_SERVER_DB //500
+            }
+        }
+    } else {
+        return message.ERROR_NOT_FOUND //404
+    }
+}
+
 module.exports = {
     getAllDiretores,
     getDiretor,
-    setInserirDiretor
+    setInserirDiretor,
+    setDeletarDiretor
 }
